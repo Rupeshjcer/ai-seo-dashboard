@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyword Research | AI SEO Growth</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <style>
+        .keyword-table th { cursor: pointer; }
+        .keyword-table th:hover { color: var(--primary); }
+        .intent-badge {
+            font-size: 0.7rem; padding: 2px 8px; border-radius: 4px;
+        }
+        .intent-info { background: rgba(59, 130, 246, 0.2); color: #3B82F6; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .intent-nav { background: rgba(168, 85, 247, 0.2); color: #A855F7; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .intent-comm { background: rgba(245, 158, 11, 0.2); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .intent-trans { background: rgba(34, 197, 94, 0.2); color: #22C55E; border: 1px solid rgba(34, 197, 94, 0.3); }
+    </style>
+</head>
+<body>
+<div class="app-container">
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="icon-wrapper"><i class="bi bi-graph-up-arrow"></i></div> AI SEO
+        </div>
+        <nav class="sidebar-nav mt-3">
+            <div class="sidebar-heading">Main Menu</div>
+            <a href="dashboard.html" class="sidebar-link"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+            <div class="sidebar-heading">SEO Tools</div>
+            <a href="website-audit.html" class="sidebar-link"><i class="bi bi-search"></i> Website Audit</a>
+            <a href="seo-analysis.html" class="sidebar-link"><i class="bi bi-bar-chart"></i> SEO Analysis</a>
+            <a href="keyword-research.html" class="sidebar-link active"><i class="bi bi-key"></i> Keyword Research</a>
+            <a href="competitor-analysis.html" class="sidebar-link"><i class="bi bi-people"></i> Competitor Analysis</a>
+            <a href="backlinks.html" class="sidebar-link"><i class="bi bi-link-45deg"></i> Backlinks</a>
+            <a href="content-optimizer.html" class="sidebar-link"><i class="bi bi-file-earmark-text"></i> Content Optimizer</a>
+            <a href="technical-seo.html" class="sidebar-link"><i class="bi bi-gear"></i> Technical SEO</a>
+            <div class="sidebar-heading">Data & Reports</div>
+            <a href="analytics.html" class="sidebar-link"><i class="bi bi-graph-up"></i> Analytics</a>
+            <a href="reports.html" class="sidebar-link"><i class="bi bi-file-earmark-pdf"></i> Reports</a>
+            <a href="recommendations.html" class="sidebar-link"><i class="bi bi-lightbulb"></i> AI Recommendations</a>
+            <div class="sidebar-heading">Account</div>
+            <a href="settings.html" class="sidebar-link"><i class="bi bi-sliders"></i> Settings</a>
+            <a href="profile.html" class="sidebar-link"><i class="bi bi-person"></i> Profile</a>
+            <a href="help.html" class="sidebar-link"><i class="bi bi-question-circle"></i> Help & Support</a>
+        </nav>
+        <div class="mt-auto pt-3">
+            <a href="#" id="logoutBtn" class="sidebar-link text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="main-content">
+        <!-- NAVBAR -->
+        <header class="top-navbar">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-list mobile-toggle" id="mobileSidebarToggle"></i>
+            </div>
+            <div class="nav-actions">
+                <button class="action-btn" id="themeToggle" title="Toggle Theme"><i class="bi bi-sun-fill" style="color: #F59E0B;"></i></button>
+                <a href="profile.html" class="user-profile">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-info">
+                        <span class="user-name" id="userNameDisplay">Admin</span>
+                    </div>
+                </a>
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <div class="page-content">
+            <div class="page-header fade-in-up">
+                <div>
+                    <h1 class="page-title">Keyword Magic Tool</h1>
+                    <p class="page-subtitle">Discover new opportunities, analyze search intent and difficulty.</p>
+                </div>
+            </div>
+
+            <div class="glass-card mb-4 fade-in-up delay-100">
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-search"></i></span>
+                            <input type="text" id="keywordInput" class="form-control border-start-0 ps-0 form-control-lg" placeholder="Enter seed keyword (e.g., ai dashboard)">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select form-control form-control-lg">
+                            <option value="us">🇺🇸 United States</option>
+                            <option value="uk">🇬🇧 United Kingdom</option>
+                            <option value="in">🇮🇳 India</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary w-100 h-100 btn-premium" id="searchKeywordBtn">Analyze</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section (Hidden until search) -->
+            <div id="resultsSection" class="d-none">
+                
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="glass-card stat-card fade-in-up">
+                            <div class="stat-icon primary"><i class="bi bi-bar-chart-line"></i></div>
+                            <div class="stat-details">
+                                <h4>Search Volume</h4>
+                                <div class="stat-value" id="volVal">24.5K</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="glass-card stat-card fade-in-up delay-100">
+                            <div class="stat-icon warning"><i class="bi bi-speedometer2"></i></div>
+                            <div class="stat-details">
+                                <h4>Keyword Difficulty</h4>
+                                <div class="stat-value" id="kdVal">62%</div>
+                                <div class="text-warning small">Hard</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="glass-card stat-card fade-in-up delay-200">
+                            <div class="stat-icon info"><i class="bi bi-bullseye"></i></div>
+                            <div class="stat-details">
+                                <h4>Global Volume</h4>
+                                <div class="stat-value">68.2K</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="glass-card stat-card fade-in-up delay-300">
+                            <div class="stat-icon success"><i class="bi bi-currency-dollar"></i></div>
+                            <div class="stat-details">
+                                <h4>Cost Per Click (CPC)</h4>
+                                <div class="stat-value" id="cpcVal">$3.50</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card fade-in-up mb-4">
+                    <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-3 mb-3">
+                        <ul class="nav nav-pills" id="kwTabs">
+                            <li class="nav-item"><a class="nav-link active bg-primary text-white px-4 rounded-pill" href="#">Broad Match</a></li>
+                            <li class="nav-item"><a class="nav-link text-muted px-4" href="#">Phrase Match</a></li>
+                            <li class="nav-item"><a class="nav-link text-muted px-4" href="#">Questions</a></li>
+                        </ul>
+                        <button class="btn btn-outline btn-sm"><i class="bi bi-download"></i> Export CSV</button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table-glass keyword-table">
+                            <thead>
+                                <tr>
+                                    <th>Keyword <i class="bi bi-arrow-down-up ms-1 small"></i></th>
+                                    <th>Intent</th>
+                                    <th>Volume <i class="bi bi-arrow-down-up ms-1 small"></i></th>
+                                    <th>KD %</th>
+                                    <th>CPC</th>
+                                    <th>Trend</th>
+                                </tr>
+                            </thead>
+                            <tbody id="keywordTableBody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div> <!-- End Results -->
+
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/keyword-research.js"></script>
+</body>
+</html>

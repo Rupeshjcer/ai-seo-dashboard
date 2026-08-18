@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Optimizer | AI SEO Growth</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <style>
+        .editor-container {
+            min-height: 400px; background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color); border-radius: var(--border-radius-sm);
+            padding: 1rem; color: var(--text-primary); outline: none;
+        }
+        .editor-container:focus {
+            border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        .ai-action-btn { background: rgba(79, 70, 229, 0.1); color: var(--primary); border: 1px solid rgba(79, 70, 229, 0.3); }
+        .ai-action-btn:hover { background: rgba(79, 70, 229, 0.2); color: var(--primary); }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="icon-wrapper"><i class="bi bi-graph-up-arrow"></i></div> AI SEO
+        </div>
+        <nav class="sidebar-nav mt-3">
+            <div class="sidebar-heading">Main Menu</div>
+            <a href="dashboard.html" class="sidebar-link"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+            <div class="sidebar-heading">SEO Tools</div>
+            <a href="website-audit.html" class="sidebar-link"><i class="bi bi-search"></i> Website Audit</a>
+            <a href="seo-analysis.html" class="sidebar-link"><i class="bi bi-bar-chart"></i> SEO Analysis</a>
+            <a href="keyword-research.html" class="sidebar-link"><i class="bi bi-key"></i> Keyword Research</a>
+            <a href="competitor-analysis.html" class="sidebar-link"><i class="bi bi-people"></i> Competitor Analysis</a>
+            <a href="backlinks.html" class="sidebar-link"><i class="bi bi-link-45deg"></i> Backlinks</a>
+            <a href="content-optimizer.html" class="sidebar-link active"><i class="bi bi-file-earmark-text"></i> Content Optimizer</a>
+            <a href="technical-seo.html" class="sidebar-link"><i class="bi bi-gear"></i> Technical SEO</a>
+            <div class="sidebar-heading">Data & Reports</div>
+            <a href="analytics.html" class="sidebar-link"><i class="bi bi-graph-up"></i> Analytics</a>
+            <a href="reports.html" class="sidebar-link"><i class="bi bi-file-earmark-pdf"></i> Reports</a>
+            <a href="recommendations.html" class="sidebar-link"><i class="bi bi-lightbulb"></i> AI Recommendations</a>
+            <div class="sidebar-heading">Account</div>
+            <a href="settings.html" class="sidebar-link"><i class="bi bi-sliders"></i> Settings</a>
+            <a href="profile.html" class="sidebar-link"><i class="bi bi-person"></i> Profile</a>
+            <a href="help.html" class="sidebar-link"><i class="bi bi-question-circle"></i> Help & Support</a>
+        </nav>
+        <div class="mt-auto pt-3">
+            <a href="#" id="logoutBtn" class="sidebar-link text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-list mobile-toggle" id="mobileSidebarToggle"></i>
+            </div>
+            <div class="nav-actions">
+                <button class="action-btn" id="themeToggle" title="Toggle Theme"><i class="bi bi-sun-fill" style="color: #F59E0B;"></i></button>
+                <a href="profile.html" class="user-profile">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-info"><span class="user-name" id="userNameDisplay">Admin</span></div>
+                </a>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <div class="page-header fade-in-up">
+                <div>
+                    <h1 class="page-title">AI Content Optimizer</h1>
+                    <p class="page-subtitle">Write, analyze, and optimize your content for search engines.</p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8 fade-in-up delay-100">
+                    <div class="glass-card mb-4">
+                        <div class="mb-3">
+                            <label class="form-label">Target Keyword</label>
+                            <input type="text" id="targetKeyword" class="form-control" placeholder="e.g., ai dashboard">
+                        </div>
+                        <div class="mb-2 d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-type-bold"></i></button>
+                                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-type-italic"></i></button>
+                                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-type-underline"></i></button>
+                                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-link"></i></button>
+                                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-list-ul"></i></button>
+                            </div>
+                            <span class="text-muted small" id="wordCountDisplay">0 words</span>
+                        </div>
+                        <div class="editor-container" id="editor" contenteditable="true" placeholder="Start writing or paste your content here..."></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 fade-in-up delay-200">
+                    <!-- Score Card -->
+                    <div class="glass-card mb-4 text-center">
+                        <h5 class="mb-3">Content Score</h5>
+                        <div class="score-meter mx-auto" id="contentScoreMeter" style="--score: 0; width: 120px; height: 120px;">
+                            <div class="score-value" id="contentScoreVal" style="font-size: 2rem;">0</div>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-primary w-100 btn-premium" id="analyzeContentBtn"><i class="bi bi-magic"></i> Analyze Content</button>
+                        </div>
+                    </div>
+
+                    <!-- AI Tools -->
+                    <div class="glass-card mb-4">
+                        <h5 class="mb-3 fs-6">AI Writing Tools</h5>
+                        <div class="d-grid gap-2">
+                            <button class="btn ai-action-btn"><i class="bi bi-stars"></i> Generate Title Ideas</button>
+                            <button class="btn ai-action-btn"><i class="bi bi-card-text"></i> Write Meta Description</button>
+                            <button class="btn ai-action-btn"><i class="bi bi-list-check"></i> Generate FAQ Section</button>
+                        </div>
+                    </div>
+
+                    <!-- Optimization Checklist -->
+                    <div class="glass-card" id="optimizationResults">
+                        <h5 class="mb-3 fs-6">Optimization Checklist</h5>
+                        <ul class="list-group list-group-flush bg-transparent">
+                            <li class="list-group-item bg-transparent text-muted px-0 border-secondary"><i class="bi bi-dash-circle me-2"></i>Target Keyword in Title</li>
+                            <li class="list-group-item bg-transparent text-muted px-0 border-secondary"><i class="bi bi-dash-circle me-2"></i>Keyword Density (Target 1-3%)</li>
+                            <li class="list-group-item bg-transparent text-muted px-0 border-secondary"><i class="bi bi-dash-circle me-2"></i>Word Count (Target > 500)</li>
+                            <li class="list-group-item bg-transparent text-muted px-0 border-secondary"><i class="bi bi-dash-circle me-2"></i>Readability Score</li>
+                        </ul>
+                        <div class="text-center mt-3 text-muted small">Analyze content to see results</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/content-optimizer.js"></script>
+</body>
+</html>

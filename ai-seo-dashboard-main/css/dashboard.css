@@ -1,0 +1,39 @@
+/* ==========================================================================
+   Dashboard Specific Styles
+   ========================================================================== */
+
+/* Overrides or additions specifically for the overview dashboard page */
+
+.ai-insight-list .insight-item {
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.ai-insight-list .insight-item:hover {
+    transform: translateX(5px);
+    box-shadow: var(--shadow-sm);
+}
+
+.score-meter {
+    /* Base styles are in theme.css, this adds animations specifically for dashboard */
+    animation: pulseGlow 2s infinite alternate;
+}
+
+@keyframes pulseGlow {
+    from { box-shadow: 0 0 10px rgba(79, 70, 229, 0.2); }
+    to { box-shadow: 0 0 25px rgba(79, 70, 229, 0.6); }
+}
+
+.score-meter.good {
+    animation-name: pulseGlowGood;
+}
+
+@keyframes pulseGlowGood {
+    from { box-shadow: 0 0 10px rgba(34, 197, 94, 0.2); }
+    to { box-shadow: 0 0 25px rgba(34, 197, 94, 0.6); }
+}
+
+/* Dashboard specific layout tweaks if needed */
+.chart-container {
+    width: 100%;
+}

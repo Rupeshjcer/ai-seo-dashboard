@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Support | AI SEO Growth</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <style>
+        .faq-button {
+            width: 100%; text-align: left; background: transparent; border: none;
+            padding: 1.25rem 1rem; color: var(--text-primary); font-weight: 500;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .faq-button:focus { outline: none; }
+        .faq-button[aria-expanded="true"] .bi-chevron-down { transform: rotate(180deg); }
+        .bi-chevron-down { transition: transform 0.3s ease; }
+        .faq-content { padding: 0 1rem 1.25rem 1rem; color: var(--text-muted); font-size: 0.95rem; }
+        
+        .support-card { text-align: center; padding: 2rem; border-radius: var(--border-radius-lg); transition: var(--transition); }
+        .support-card:hover { background: rgba(255,255,255,0.02); transform: translateY(-5px); }
+        .support-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="icon-wrapper"><i class="bi bi-graph-up-arrow"></i></div> AI SEO
+        </div>
+        <nav class="sidebar-nav mt-3">
+            <div class="sidebar-heading">Main Menu</div>
+            <a href="dashboard.html" class="sidebar-link"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+            <div class="sidebar-heading">SEO Tools</div>
+            <a href="website-audit.html" class="sidebar-link"><i class="bi bi-search"></i> Website Audit</a>
+            <a href="seo-analysis.html" class="sidebar-link"><i class="bi bi-bar-chart"></i> SEO Analysis</a>
+            <a href="keyword-research.html" class="sidebar-link"><i class="bi bi-key"></i> Keyword Research</a>
+            <a href="competitor-analysis.html" class="sidebar-link"><i class="bi bi-people"></i> Competitor Analysis</a>
+            <a href="backlinks.html" class="sidebar-link"><i class="bi bi-link-45deg"></i> Backlinks</a>
+            <a href="content-optimizer.html" class="sidebar-link"><i class="bi bi-file-earmark-text"></i> Content Optimizer</a>
+            <a href="technical-seo.html" class="sidebar-link"><i class="bi bi-gear"></i> Technical SEO</a>
+            <div class="sidebar-heading">Data & Reports</div>
+            <a href="analytics.html" class="sidebar-link"><i class="bi bi-graph-up"></i> Analytics</a>
+            <a href="reports.html" class="sidebar-link"><i class="bi bi-file-earmark-pdf"></i> Reports</a>
+            <a href="recommendations.html" class="sidebar-link"><i class="bi bi-lightbulb"></i> AI Recommendations</a>
+            <div class="sidebar-heading">Account</div>
+            <a href="settings.html" class="sidebar-link"><i class="bi bi-sliders"></i> Settings</a>
+            <a href="profile.html" class="sidebar-link"><i class="bi bi-person"></i> Profile</a>
+            <a href="help.html" class="sidebar-link active"><i class="bi bi-question-circle"></i> Help & Support</a>
+        </nav>
+        <div class="mt-auto pt-3">
+            <a href="#" id="logoutBtn" class="sidebar-link text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-list mobile-toggle" id="mobileSidebarToggle"></i>
+            </div>
+            <div class="nav-actions">
+                <button class="action-btn" id="themeToggle" title="Toggle Theme"><i class="bi bi-sun-fill" style="color: #F59E0B;"></i></button>
+                <a href="profile.html" class="user-profile">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-info"><span class="user-name" id="userNameDisplay">Admin</span></div>
+                </a>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <div class="page-header fade-in-up text-center d-block pb-5">
+                <h1 class="page-title fs-2 mb-3">How can we help you today?</h1>
+                <div class="search-wrapper mx-auto mt-4" style="max-width: 600px; padding: 0.5rem; background: var(--surface); border: 1px solid var(--border-color); border-radius: 50px;">
+                    <i class="bi bi-search ms-3 fs-5"></i>
+                    <input type="text" class="search-input fs-5" style="border-radius: 50px; background: transparent;" placeholder="Search for articles, guides, or features...">
+                </div>
+            </div>
+
+            <!-- Support Channels -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-4 fade-in-up delay-100">
+                    <div class="glass-card support-card h-100">
+                        <i class="bi bi-book text-primary support-icon"></i>
+                        <h4 class="fs-5">Documentation</h4>
+                        <p class="text-muted small">Read detailed guides on how to use every feature of the dashboard.</p>
+                        <button class="btn btn-outline-primary w-100 mt-2">Browse Docs</button>
+                    </div>
+                </div>
+                <div class="col-md-4 fade-in-up delay-200">
+                    <div class="glass-card support-card h-100">
+                        <i class="bi bi-play-circle text-info support-icon"></i>
+                        <h4 class="fs-5">Video Tutorials</h4>
+                        <p class="text-muted small">Watch step-by-step videos to master AI SEO Growth quickly.</p>
+                        <button class="btn btn-outline-info w-100 mt-2">Watch Videos</button>
+                    </div>
+                </div>
+                <div class="col-md-4 fade-in-up delay-300">
+                    <div class="glass-card support-card h-100">
+                        <i class="bi bi-headset text-success support-icon"></i>
+                        <h4 class="fs-5">Contact Support</h4>
+                        <p class="text-muted small">Can't find the answer? Get in touch with our expert support team.</p>
+                        <button class="btn btn-success bg-opacity-10 text-success border-success w-100 mt-2">Open Ticket</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="glass-card fade-in-up">
+                <h4 class="mb-4 text-center">Frequently Asked Questions</h4>
+                
+                <div class="accordion" id="faqAccordion">
+                    
+                    <div class="border-bottom border-secondary">
+                        <button class="faq-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true">
+                            How does the AI Content Optimizer work?
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <div id="faq1" class="collapse show" data-bs-parent="#faqAccordion">
+                            <div class="faq-content">
+                                Our AI Content Optimizer uses advanced natural language processing (NLP) to analyze your content against top-ranking pages for your target keyword. It checks keyword density, readability, word count, and intent matching to provide a comprehensive SEO score and actionable recommendations.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="border-bottom border-secondary">
+                        <button class="faq-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false">
+                            How often is the keyword data updated?
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <div id="faq2" class="collapse" data-bs-parent="#faqAccordion">
+                            <div class="faq-content">
+                                We refresh our core keyword database monthly, but individual keyword queries pull real-time search volume and difficulty metrics directly from our data partners when you perform a search in the Keyword Research tool.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="border-bottom border-secondary">
+                        <button class="faq-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false">
+                            Can I white-label the reports for my clients?
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <div id="faq3" class="collapse" data-bs-parent="#faqAccordion">
+                            <div class="faq-content">
+                                Yes! Users on the Pro and Enterprise plans can add their own logo, custom color schemes, and remove all AI SEO Growth branding from generated PDF and interactive link reports. You can configure this in the Settings > Reports section.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <button class="faq-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false">
+                            What makes a backlink "Toxic"?
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <div id="faq4" class="collapse" data-bs-parent="#faqAccordion">
+                            <div class="faq-content">
+                                Our system flags backlinks as toxic based on over 50 parameters, including the domain's spam score, the relevance of the linking site to your niche, the use of manipulative anchor text, and whether the linking site is part of a known link network.
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/help.js"></script>
+</body>
+</html>

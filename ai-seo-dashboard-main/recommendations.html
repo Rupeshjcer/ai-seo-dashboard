@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Recommendations | AI SEO Growth</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <style>
+        .rec-item { transition: var(--transition); cursor: pointer; }
+        .rec-item:hover { transform: translateX(5px); background: rgba(255,255,255,0.02); }
+        .priority-high { border-left: 4px solid var(--danger); }
+        .priority-med { border-left: 4px solid var(--warning); }
+        .priority-low { border-left: 4px solid var(--info); }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="icon-wrapper"><i class="bi bi-graph-up-arrow"></i></div> AI SEO
+        </div>
+        <nav class="sidebar-nav mt-3">
+            <div class="sidebar-heading">Main Menu</div>
+            <a href="dashboard.html" class="sidebar-link"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+            <div class="sidebar-heading">SEO Tools</div>
+            <a href="website-audit.html" class="sidebar-link"><i class="bi bi-search"></i> Website Audit</a>
+            <a href="seo-analysis.html" class="sidebar-link"><i class="bi bi-bar-chart"></i> SEO Analysis</a>
+            <a href="keyword-research.html" class="sidebar-link"><i class="bi bi-key"></i> Keyword Research</a>
+            <a href="competitor-analysis.html" class="sidebar-link"><i class="bi bi-people"></i> Competitor Analysis</a>
+            <a href="backlinks.html" class="sidebar-link"><i class="bi bi-link-45deg"></i> Backlinks</a>
+            <a href="content-optimizer.html" class="sidebar-link"><i class="bi bi-file-earmark-text"></i> Content Optimizer</a>
+            <a href="technical-seo.html" class="sidebar-link"><i class="bi bi-gear"></i> Technical SEO</a>
+            <div class="sidebar-heading">Data & Reports</div>
+            <a href="analytics.html" class="sidebar-link"><i class="bi bi-graph-up"></i> Analytics</a>
+            <a href="reports.html" class="sidebar-link"><i class="bi bi-file-earmark-pdf"></i> Reports</a>
+            <a href="recommendations.html" class="sidebar-link active"><i class="bi bi-lightbulb"></i> AI Recommendations</a>
+            <div class="sidebar-heading">Account</div>
+            <a href="settings.html" class="sidebar-link"><i class="bi bi-sliders"></i> Settings</a>
+            <a href="profile.html" class="sidebar-link"><i class="bi bi-person"></i> Profile</a>
+            <a href="help.html" class="sidebar-link"><i class="bi bi-question-circle"></i> Help & Support</a>
+        </nav>
+        <div class="mt-auto pt-3">
+            <a href="#" id="logoutBtn" class="sidebar-link text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-list mobile-toggle" id="mobileSidebarToggle"></i>
+                <select id="projectSelect" class="form-select form-control w-auto border-0 bg-transparent fw-semibold">
+                    <option value="example.com">example.com</option>
+                    <option value="myportfolio.dev">myportfolio.dev</option>
+                </select>
+            </div>
+            <div class="nav-actions">
+                <button class="action-btn" id="themeToggle" title="Toggle Theme"><i class="bi bi-sun-fill" style="color: #F59E0B;"></i></button>
+                <button class="btn btn-primary btn-sm px-3 ms-2" id="generateBtn"><i class="bi bi-magic me-1"></i> Generate New</button>
+                <a href="profile.html" class="user-profile">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-info"><span class="user-name" id="userNameDisplay">Admin</span></div>
+                </a>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <div class="page-header fade-in-up">
+                <div>
+                    <h1 class="page-title">AI Action Plan</h1>
+                    <p class="page-subtitle">Prioritized SEO tasks automatically generated based on your site's data.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <span class="badge bg-danger">3 High Priority</span>
+                    <span class="badge bg-warning text-dark">5 Medium</span>
+                    <span class="badge bg-info text-dark">8 Low</span>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Recommendations List -->
+                <div class="col-lg-8 fade-in-up delay-100">
+                    <div class="glass-card mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-2">
+                            <ul class="nav nav-pills" id="recTabs">
+                                <li class="nav-item"><a class="nav-link active bg-primary text-white px-3 py-1 rounded-pill" href="#" data-filter="all">All Tasks</a></li>
+                                <li class="nav-item"><a class="nav-link text-muted px-3 py-1" href="#" data-filter="content">Content</a></li>
+                                <li class="nav-item"><a class="nav-link text-muted px-3 py-1" href="#" data-filter="technical">Technical</a></li>
+                                <li class="nav-item"><a class="nav-link text-muted px-3 py-1" href="#" data-filter="links">Links</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div id="recommendationsContainer">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selected Detail View -->
+                <div class="col-lg-4 fade-in-up delay-200">
+                    <div class="glass-card h-100" id="detailCard" style="position: sticky; top: 90px;">
+                        <div class="text-center text-muted py-5" id="emptyDetail">
+                            <i class="bi bi-arrow-left-circle fs-1"></i>
+                            <p class="mt-3">Select a recommendation to view details and take action.</p>
+                        </div>
+                        
+                        <div id="contentDetail" class="d-none">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <span class="badge bg-danger mb-2" id="detailBadge">High Priority</span>
+                                    <h4 class="fs-5" id="detailTitle">Fix 404 Errors</h4>
+                                </div>
+                            </div>
+                            
+                            <p class="text-muted small mb-4" id="detailDesc">
+                                We found 3 dead links on your site. This hurts user experience and wastes crawl budget.
+                            </p>
+                            
+                            <h6 class="fs-6 mb-2">Affected URLs:</h6>
+                            <ul class="list-group list-group-flush bg-transparent small mb-4" id="detailUrls">
+                                <li class="list-group-item bg-transparent text-primary px-0 border-secondary border-bottom">/old-blog-post</li>
+                                <li class="list-group-item bg-transparent text-primary px-0 border-secondary border-bottom">/services/deleted-service</li>
+                            </ul>
+                            
+                            <h6 class="fs-6 mb-2">Suggested Action:</h6>
+                            <p class="text-muted small bg-secondary bg-opacity-10 p-3 rounded" id="detailAction">
+                                Set up 301 redirects for these URLs pointing to the most relevant live page.
+                            </p>
+                            
+                            <div class="mt-4 pt-3 border-top border-secondary">
+                                <button class="btn btn-primary w-100 mb-2">Mark as Resolved</button>
+                                <button class="btn btn-outline-secondary w-100 text-light border-secondary">Ignore for now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/recommendations.js"></script>
+</body>
+</html>
