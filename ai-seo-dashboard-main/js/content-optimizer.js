@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-function analyzeContent() {
+async function analyzeContent() {
     const text = document.getElementById('editor').innerText.trim();
     const keyword = document.getElementById('targetKeyword').value.trim();
     const btn = document.getElementById('analyzeContentBtn');
@@ -33,41 +33,23 @@ function analyzeContent() {
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Analyzing...';
 
-    // Basic client-side analysis simulation
-    setTimeout(() => {
-        const words = text.split(/\s+/).length;
-        let score = 50; // Base score
-        let kwDensity = 0;
-        
-        let kwStatus = 'fail';
-        let wordStatus = words > 500 ? 'pass' : 'fail';
-        
-        if (words > 500) score += 20;
-        else if (words > 200) score += 10;
-
-        if (keyword) {
-            const regex = new RegExp(keyword, "gi");
-            const matches = text.match(regex);
-            const count = matches ? matches.length : 0;
-            kwDensity = ((count / words) * 100).toFixed(1);
-            
-            if (kwDensity > 0.5 && kwDensity < 3.0) {
-                kwStatus = 'pass';
-                score += 30;
-            } else if (kwDensity > 0) {
-                kwStatus = 'warning';
-                score += 10;
-            }
-        }
-
-        // Update UI
-        updateScoreMeter(score);
-        updateChecklist(kwStatus, wordStatus, kwDensity, words);
-        
+    try {
+        const response = await fetch('http://127.0.0.1:5000/content-optimize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content: text, keyword })
+        });
+        const result = await response.json();
+        if (!response.ok || !result.success) throw new Error(result.message || 'Content analysis failed');
+        updateScoreMeter(result.data.score);
+        updateChecklist(result.data.checks);
+        showNotification("Content analysis complete", "success");
+    } catch (error) {
+        showNotification(error.message, "danger");
+    } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="bi bi-magic"></i> Re-Analyze Content';
-        showNotification("Content analysis complete", "success");
-    }, 1000);
+    }
 }
 
 function updateScoreMeter(score) {
@@ -91,7 +73,7 @@ function updateScoreMeter(score) {
     }, 50);
 }
 
-function updateChecklist(kwStatus, wordStatus, kwDensity, words) {
+function updateChecklist(checks) {
     const list = document.querySelector('#optimizationResults ul');
     list.innerHTML = '';
 
@@ -99,26 +81,7 @@ function updateChecklist(kwStatus, wordStatus, kwDensity, words) {
     const warnIcon = '<i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>';
     const failIcon = '<i class="bi bi-x-circle-fill text-danger me-2"></i>';
 
-    const items = [
-        { 
-            status: kwStatus, 
-            text: `Target Keyword Density: <span class="fw-bold">${kwDensity}%</span> (Target 1-3%)` 
-        },
-        { 
-            status: wordStatus, 
-            text: `Word Count: <span class="fw-bold">${words}</span> (Target > 500)` 
-        },
-        { 
-            status: 'pass', // Mock
-            text: `Readability Score: <span class="fw-bold text-success">Good (8th Grade)</span>` 
-        },
-        { 
-            status: 'warning', // Mock
-            text: `Missing H2 subheadings containing target keyword` 
-        }
-    ];
-
-    items.forEach(item => {
+    checks.forEach(item => {
         let icon = item.status === 'pass' ? checkIcon : (item.status === 'warning' ? warnIcon : failIcon);
         list.innerHTML += `<li class="list-group-item bg-transparent text-light px-0 border-secondary">${icon} ${item.text}</li>`;
     });

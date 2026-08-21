@@ -2,56 +2,11 @@
  * AI SEO Growth Dashboard - Recommendations JS
  */
 
-const mockRecs = [
-    {
-        id: 1,
-        title: "Fix 404 Errors on 3 Pages",
-        desc: "Dead links frustrate users and waste search engine crawl budget. Immediate action required.",
-        category: "technical",
-        priority: "high",
-        urls: ["/old-product-page", "/about-us-old", "/blog/deleted-post"],
-        action: "Set up 301 redirects from these URLs to the most relevant active pages on your site."
-    },
-    {
-        id: 2,
-        title: "Update Content for 'AI Dashboard'",
-        desc: "Your main competitor just updated their page for this keyword and pushed you to #3.",
-        category: "content",
-        priority: "high",
-        urls: ["/features/ai-dashboard"],
-        action: "Add a new FAQ section and update statistics to 2024 to refresh the content."
-    },
-    {
-        id: 3,
-        title: "Missing Alt Text on 12 Images",
-        desc: "Images without alt text hurt accessibility and image search rankings.",
-        category: "technical",
-        priority: "med",
-        urls: ["/blog/10-seo-tips (5 images)", "/pricing (7 images)"],
-        action: "Review the listed pages and add descriptive alt tags containing secondary keywords."
-    },
-    {
-        id: 4,
-        title: "Toxic Backlink Detected",
-        desc: "A high-spam-score domain linked to your homepage recently.",
-        category: "links",
-        priority: "high",
-        urls: ["spam-directory-xyz.com -> /"],
-        action: "Monitor for a few days. If more appear, generate a disavow file and submit to Google."
-    },
-    {
-        id: 5,
-        title: "Optimize Meta Description",
-        desc: "The meta description for your contact page is too short (under 50 chars).",
-        category: "content",
-        priority: "low",
-        urls: ["/contact"],
-        action: "Expand the description to ~150 characters. Include a clear call to action."
-    }
-];
+let recommendations = [];
+let selectedRecommendation = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    renderRecs('all');
+    loadRecommendations();
 
     // Tab filtering
     const tabs = document.querySelectorAll('#recTabs .nav-link');
@@ -72,25 +27,80 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('generateBtn').addEventListener('click', function() {
         this.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Generating...';
         this.disabled = true;
-        setTimeout(() => {
-            this.innerHTML = '<i class="bi bi-magic me-1"></i> Generate New';
-            this.disabled = false;
-            showNotification("AI has analyzed your latest data. Recommendations updated.", "success");
-        }, 1500);
+        loadRecommendations(this);
+    });
+
+    document.getElementById('resolveBtn').addEventListener('click', () => updateRecommendation('resolved'));
+    document.getElementById('ignoreBtn').addEventListener('click', () => updateRecommendation('ignored'));
+    document.getElementById('clearStatesBtn').addEventListener('click', () => {
+        localStorage.removeItem('seoRecommendationStates');
+        loadRecommendations();
+        showNotification('Cleared recommendations are visible again.', 'success');
     });
 });
+
+async function loadRecommendations(button) {
+    if (button) button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Loading...';
+    try {
+        const response = await fetch('http://127.0.0.1:5000/recommendations');
+        const result = await response.json();
+        if (!response.ok || !result.success) throw new Error(result.message || 'Could not load recommendations');
+        recommendations = result.data;
+        const hidden = JSON.parse(localStorage.getItem('seoRecommendationStates') || '{}');
+        recommendations = recommendations.filter(rec => !hidden[recommendationKey(rec)]);
+        updatePriorityCounts();
+        renderRecs('all');
+        if (button) showNotification("Recommendations updated from your latest audit.", "success");
+    } catch (error) {
+        showNotification(error.message, "danger");
+    } finally {
+        if (button) {
+            button.innerHTML = '<i class="bi bi-magic me-1"></i> Generate New';
+            button.disabled = false;
+        }
+    }
+}
+
+function recommendationKey(rec) {
+    return `${rec.title}|${rec.urls.join('|')}`;
+}
+
+function updatePriorityCounts() {
+    const count = priority => recommendations.filter(rec => rec.priority === priority).length;
+    document.getElementById('highCount').textContent = `${count('high')} High Priority`;
+    document.getElementById('mediumCount').textContent = `${count('med')} Medium`;
+    document.getElementById('lowCount').textContent = `${count('low')} Low`;
+}
+
+function updateRecommendation(state) {
+    if (!selectedRecommendation) return;
+    const states = JSON.parse(localStorage.getItem('seoRecommendationStates') || '{}');
+    states[recommendationKey(selectedRecommendation)] = state;
+    localStorage.setItem('seoRecommendationStates', JSON.stringify(states));
+    recommendations = recommendations.filter(rec => rec !== selectedRecommendation);
+    selectedRecommendation = null;
+    document.getElementById('emptyDetail').classList.remove('d-none');
+    document.getElementById('contentDetail').classList.add('d-none');
+    updatePriorityCounts();
+    renderRecs('all');
+    showNotification(state === 'resolved' ? 'Recommendation marked as resolved.' : 'Recommendation ignored.', 'success');
+}
 
 function renderRecs(filter) {
     const container = document.getElementById('recommendationsContainer');
     container.innerHTML = '';
     
-    let filtered = mockRecs;
+    let filtered = recommendations;
     if(filter !== 'all') {
-        filtered = mockRecs.filter(r => r.category === filter);
+        filtered = recommendations.filter(r => r.category === filter);
     }
 
     if(filtered.length === 0) {
-        container.innerHTML = '<div class="text-center text-muted p-4">No recommendations in this category.</div>';
+        container.innerHTML = `<div class="text-center text-muted p-4">
+            <i class="bi bi-check2-circle text-success fs-2"></i>
+            <p class="mt-3 mb-1">No active recommendations</p>
+            <small>Run another website audit or use "Show Cleared" to restore completed items.</small>
+        </div>`;
         return;
     }
 
@@ -121,6 +131,7 @@ function renderRecs(filter) {
 }
 
 function showDetail(rec) {
+    selectedRecommendation = rec;
     document.getElementById('emptyDetail').classList.add('d-none');
     document.getElementById('contentDetail').classList.remove('d-none');
     

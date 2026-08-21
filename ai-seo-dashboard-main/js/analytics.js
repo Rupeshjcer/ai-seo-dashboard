@@ -2,32 +2,40 @@
  * AI SEO Growth Dashboard - Analytics JS
  */
 
+let analyticsHistory = [];
+
 document.addEventListener('DOMContentLoaded', () => {
-    renderCharts();
+    loadAnalytics();
     
     document.getElementById('timeRange').addEventListener('change', function() {
-        // Mock updating data based on time range
         const days = parseInt(this.value);
         updateData(days);
     });
 });
 
-function renderCharts() {
+async function loadAnalytics() {
+    try {
+        const response = await fetch('http://127.0.0.1:5000/analytics');
+        const result = await response.json();
+        if (!response.ok || !result.success) throw new Error('Analytics could not be loaded');
+        analyticsHistory = result.data;
+        renderCharts(analyticsHistory);
+    } catch (error) {
+        showNotification(error.message, 'danger');
+    }
+}
+
+function renderCharts(history) {
     if (typeof ChartFactory === 'undefined') return;
 
+    if (history.length === 0) {
+        showNotification('Run a website audit to populate analytics.', 'info');
+        return;
+    }
+
     // Line Chart
-    const labels = Array.from({length: 30}, (_, i) => {
-        const d = new Date();
-        d.setDate(d.getDate() - (29 - i));
-        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    });
-    
-    // Generate organic looking data
-    let base = 500;
-    const clicks = Array.from({length: 30}, () => {
-        base = base + (Math.random() * 100 - 40);
-        return Math.floor(base);
-    });
+    const labels = history.map(row => new Date(row.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    const clicks = history.map(row => row.audits);
 
     ChartFactory.createTrendChart('trafficChart', labels, [
         { label: 'Organic Clicks', data: clicks }
@@ -58,25 +66,14 @@ function renderCharts() {
 }
 
 function updateData(days) {
-    showNotification(`Loading data for the last ${days} days...`, "info");
+    showNotification(`Showing the last ${days} days of saved audit data.`, "info");
     
-    // Update chart with new data array length
     const chart = Chart.getChart('trafficChart');
     if (chart) {
-        const labels = Array.from({length: days}, (_, i) => {
-            const d = new Date();
-            d.setDate(d.getDate() - ((days-1) - i));
-            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        });
-        
-        let base = 500;
-        const clicks = Array.from({length: days}, () => {
-            base = base + (Math.random() * 100 - 40);
-            return Math.floor(base);
-        });
-
-        chart.data.labels = labels;
-        chart.data.datasets[0].data = clicks;
+        const cutoff = Date.now() - days * 86400000;
+        const filtered = analyticsHistory.filter(row => new Date(row.date).getTime() >= cutoff);
+        chart.data.labels = filtered.map(row => new Date(row.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+        chart.data.datasets[0].data = filtered.map(row => row.audits);
         chart.update();
     }
 }

@@ -19,18 +19,10 @@ async function loadHistoricalData() {
         // We fetch the history from the existing backend
         const response = await fetchAPI('/history');
         
-        let data = [];
-        if (response.success && response.data.length > 0) {
-            data = response.data;
-        } else {
-            // Mock data if backend is empty
-            data = [
-                { date: new Date(Date.now() - 0).toISOString(), seo_score: 82, content_score: 75, health_score: 91 },
-                { date: new Date(Date.now() - 86400000*7).toISOString(), seo_score: 78, content_score: 72, health_score: 85 },
-                { date: new Date(Date.now() - 86400000*14).toISOString(), seo_score: 75, content_score: 70, health_score: 82 },
-                { date: new Date(Date.now() - 86400000*21).toISOString(), seo_score: 70, content_score: 65, health_score: 75 },
-                { date: new Date(Date.now() - 86400000*28).toISOString(), seo_score: 65, content_score: 60, health_score: 68 }
-            ];
+        const data = response.success ? response.data : [];
+        if (data.length === 0) {
+            showNotification("Run a website audit to build SEO history.", "info");
+            return;
         }
 
         renderCharts(data.reverse()); // Reverse to show oldest to newest left to right

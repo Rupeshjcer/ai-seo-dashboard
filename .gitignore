@@ -1,0 +1,20 @@
+# Local Python environments and generated files
+ai-seo-dashboard-main/venv/
+ai-seo-dashboard-main/venv - Copy/
+ai-seo-dashboard-main/backend/__pycache__/
+ai-seo-dashboard-main/backend - Copy/
+
+# Local application data
+ai-seo-dashboard-main/backend/seo.db
+
+# Duplicate backup assets
+ai-seo-dashboard-main/css - Copy/
+ai-seo-dashboard-main/js - Copy/
+ai-seo-dashboard-main/backlinks - Copy.html
+
+# Python tooling and OS metadata
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.DS_Store
+Thumbs.db

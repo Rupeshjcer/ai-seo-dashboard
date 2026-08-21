@@ -22,6 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             showNotification(`Report "${name}" generated successfully!`, "success");
             
+            const reports = JSON.parse(localStorage.getItem('seoReports') || '[]');
+            reports.unshift({ name, type: 'Monthly Overview', date: new Date().toLocaleString(), status: 'Ready' });
+            localStorage.setItem('seoReports', JSON.stringify(reports));
+
             // Prepend new report to list
             const tbody = document.getElementById('reportsList');
             const tr = document.createElement('tr');
@@ -43,13 +47,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function renderReportsList() {
     const tbody = document.getElementById('reportsList');
+    tbody.innerHTML = '';
     
-    const reports = [
-        { name: "Monthly Report - July", type: "Overview", date: "2 days ago", status: "Ready" },
-        { name: "Technical Audit - example.com", type: "Tech SEO", date: "1 week ago", status: "Ready" },
-        { name: "Competitor Analysis Q2", type: "Comparison", date: "2 weeks ago", status: "Ready" },
-        { name: "Keyword Gap Analysis", type: "Custom", date: "1 month ago", status: "Ready" }
-    ];
+    const reports = JSON.parse(localStorage.getItem('seoReports') || '[]');
+    if (reports.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No reports generated yet. Create one to get started.</td></tr>';
+        return;
+    }
     
     reports.forEach(r => {
         const tr = document.createElement('tr');

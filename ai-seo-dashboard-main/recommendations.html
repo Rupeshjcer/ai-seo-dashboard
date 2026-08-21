@@ -28,10 +28,7 @@
             <a href="website-audit.html" class="sidebar-link"><i class="bi bi-search"></i> Website Audit</a>
             <a href="seo-analysis.html" class="sidebar-link"><i class="bi bi-bar-chart"></i> SEO Analysis</a>
             <a href="keyword-research.html" class="sidebar-link"><i class="bi bi-key"></i> Keyword Research</a>
-            <a href="competitor-analysis.html" class="sidebar-link"><i class="bi bi-people"></i> Competitor Analysis</a>
-            <a href="backlinks.html" class="sidebar-link"><i class="bi bi-link-45deg"></i> Backlinks</a>
             <a href="content-optimizer.html" class="sidebar-link"><i class="bi bi-file-earmark-text"></i> Content Optimizer</a>
-            <a href="technical-seo.html" class="sidebar-link"><i class="bi bi-gear"></i> Technical SEO</a>
             <div class="sidebar-heading">Data & Reports</div>
             <a href="analytics.html" class="sidebar-link"><i class="bi bi-graph-up"></i> Analytics</a>
             <a href="reports.html" class="sidebar-link"><i class="bi bi-file-earmark-pdf"></i> Reports</a>
@@ -71,10 +68,11 @@
                     <h1 class="page-title">AI Action Plan</h1>
                     <p class="page-subtitle">Prioritized SEO tasks automatically generated based on your site's data.</p>
                 </div>
-                <div class="d-flex gap-2">
-                    <span class="badge bg-danger">3 High Priority</span>
-                    <span class="badge bg-warning text-dark">5 Medium</span>
-                    <span class="badge bg-info text-dark">8 Low</span>
+                <div class="d-flex gap-2 align-items-center flex-wrap justify-content-end">
+                    <span class="badge bg-danger" id="highCount">0 High Priority</span>
+                    <span class="badge bg-warning text-dark" id="mediumCount">0 Medium</span>
+                    <span class="badge bg-info text-dark" id="lowCount">0 Low</span>
+                    <button class="btn btn-outline-secondary btn-sm" id="clearStatesBtn" type="button">Show Cleared</button>
                 </div>
             </div>
 
@@ -129,8 +127,8 @@
                             </p>
                             
                             <div class="mt-4 pt-3 border-top border-secondary">
-                                <button class="btn btn-primary w-100 mb-2">Mark as Resolved</button>
-                                <button class="btn btn-outline-secondary w-100 text-light border-secondary">Ignore for now</button>
+                                <button class="btn btn-primary w-100 mb-2" id="resolveBtn">Mark as Resolved</button>
+                                <button class="btn btn-outline-secondary w-100 text-light border-secondary" id="ignoreBtn">Ignore for now</button>
                             </div>
                         </div>
                     </div>
@@ -142,6 +140,6 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/theme.js"></script>
-<script src="js/recommendations.js"></script>
+<script src="js/recommendations.js?v=2"></script>
 </body>
 </html>

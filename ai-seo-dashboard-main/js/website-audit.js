@@ -4,7 +4,14 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const analyzeBtn = document.getElementById('analyzeBtn');
+    const auditForm = document.getElementById('auditForm');
     
+    if(auditForm) {
+        auditForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            runAudit();
+        });
+    }
     if(analyzeBtn) {
         analyzeBtn.addEventListener('click', runAudit);
     }
@@ -19,6 +26,15 @@ async function runAudit() {
         return;
     }
 
+    if (!/^https?:\/\//i.test(url)) url = `https://${url}`;
+    try {
+        new URL(url);
+    } catch {
+        showNotification("Please enter a valid website URL", "warning");
+        return;
+    }
+    urlInput.value = url;
+
     const analyzeBtn = document.getElementById('analyzeBtn');
     const scanProgress = document.getElementById('scanProgress');
     const auditResults = document.getElementById('auditResults');
@@ -31,19 +47,17 @@ async function runAudit() {
     auditResults.classList.add('d-none');
     scanProgress.classList.remove('d-none');
     
-    // Simulate scan progress animation
     let progress = 10;
     const progressInterval = setInterval(() => {
-        progress += Math.random() * 15;
+        progress += 10;
         if(progress > 90) progress = 90;
         progressBar.style.width = `${progress}%`;
         
         if(progress > 30) statusText.innerText = "Analyzing Content Structure...";
-        if(progress > 60) statusText.innerText = "Checking Technical SEO...";
+        if(progress > 60) statusText.innerText = "Checking site health...";
     }, 800);
 
     try {
-        // We use the existing flask endpoint for analysis
         const response = await fetchAPI('/analyze', {
             method: 'POST',
             body: JSON.stringify({ url: url })
@@ -53,28 +67,30 @@ async function runAudit() {
         progressBar.style.width = '100%';
         statusText.innerText = "Complete!";
 
-        setTimeout(() => {
-            scanProgress.classList.add('d-none');
-            
-            if (response.success) {
+        scanProgress.classList.add('d-none');
+        if (response.success) {
+            auditResults.classList.remove('d-none');
+            try {
                 renderAuditResults(response.data);
-                auditResults.classList.remove('d-none');
                 showNotification("Analysis complete!", "success");
-            } else {
-                showNotification(response.message || "Failed to analyze website", "danger");
+            } catch (renderError) {
+                console.error('Audit results rendering failed:', renderError);
+                document.getElementById('detailedResultsGrid').innerHTML = '<div class="col-12"><div class="alert alert-warning">The audit completed, but some result details could not be displayed. Please refresh and try again.</div></div>';
+                showNotification("Audit completed with display warnings.", "warning");
             }
-            
-            // Reset button
-            analyzeBtn.disabled = false;
-            analyzeBtn.innerHTML = '<i class="bi bi-search"></i> Run Audit';
-        }, 500);
-
+        } else {
+            auditResults.classList.add('d-none');
+            showNotification(response.message || "Failed to analyze website", "danger");
+        }
     } catch (error) {
         clearInterval(progressInterval);
         scanProgress.classList.add('d-none');
+        auditResults.classList.remove('d-none');
+        document.getElementById('detailedResultsGrid').innerHTML = `<div class="col-12"><div class="alert alert-danger">Audit could not be completed: ${error.message || 'Unable to reach the audit service.'}</div></div>`;
+        showNotification(error.message || "Could not connect to the audit server.", "danger");
+    } finally {
         analyzeBtn.disabled = false;
         analyzeBtn.innerHTML = '<i class="bi bi-search"></i> Run Audit';
-        showNotification("Error connecting to server. Is Flask running?", "danger");
     }
 }
 
@@ -82,15 +98,12 @@ function renderAuditResults(data) {
     // 1. Update Main Scores
     updateMeter('seoScoreMeter', 'seoScoreVal', data.seo_score);
     
-    document.getElementById('contentScoreVal').innerHTML = `<span class="counter-value" data-target="${data.content_score}">0</span>`;
+    document.getElementById('contentScoreVal').innerHTML = `<span class="counter-value" data-target="${data.content_score}">${data.content_score}</span>`;
     document.getElementById('contentScoreLabel').innerHTML = getStatusLabel(data.content_score);
     
-    document.getElementById('healthScoreVal').innerHTML = `<span class="counter-value" data-target="${data.health_score}">0</span>`;
+    document.getElementById('healthScoreVal').innerHTML = `<span class="counter-value" data-target="${data.health_score}">${data.health_score}</span>`;
     document.getElementById('healthScoreLabel').innerHTML = getStatusLabel(data.health_score);
     
-    // Re-init counters for new elements
-    initCounters();
-
     // 2. Generate Detailed Cards
     const grid = document.getElementById('detailedResultsGrid');
     const checks = data.checks;
@@ -238,7 +251,7 @@ function updateMeter(meterId, valId, score) {
     }, 100);
 
     // Set value
-    valObj.innerHTML = `<span class="counter-value" data-target="${score}">0</span>`;
+    valObj.innerHTML = `<span class="counter-value" data-target="${score}">${score}</span>`;
 }
 
 function getStatusLabel(score) {

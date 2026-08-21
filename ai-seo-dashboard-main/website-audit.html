@@ -38,17 +38,8 @@
             <a href="keyword-research.html" class="sidebar-link">
                 <i class="bi bi-key"></i> Keyword Research
             </a>
-            <a href="competitor-analysis.html" class="sidebar-link">
-                <i class="bi bi-people"></i> Competitor Analysis
-            </a>
-            <a href="backlinks.html" class="sidebar-link">
-                <i class="bi bi-link-45deg"></i> Backlinks
-            </a>
             <a href="content-optimizer.html" class="sidebar-link">
                 <i class="bi bi-file-earmark-text"></i> Content Optimizer
-            </a>
-            <a href="technical-seo.html" class="sidebar-link">
-                <i class="bi bi-gear"></i> Technical SEO
             </a>
             
             <div class="sidebar-heading">Data & Reports</div>
@@ -122,23 +113,23 @@
             </div>
 
             <!-- Audit Input Section -->
-            <div class="glass-card mb-4 fade-in-up delay-100">
+            <form class="glass-card mb-4" id="auditForm">
                 <div class="row g-3 align-items-center">
                     <div class="col-md-9">
                         <div class="input-group">
                             <span class="input-group-text bg-transparent border-end-0">
                                 <i class="bi bi-globe2"></i>
                             </span>
-                            <input type="text" id="websiteURL" class="form-control border-start-0 ps-0" placeholder="https://example.com" value="example.com">
+                            <input type="text" id="websiteURL" class="form-control border-start-0 ps-0" placeholder="https://example.com" value="https://example.com" required>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <button class="btn btn-primary w-100 btn-premium py-3" id="analyzeBtn">
+                        <button type="button" class="btn btn-primary w-100 btn-premium py-3" id="analyzeBtn">
                             <i class="bi bi-search"></i> Run Audit
                         </button>
                     </div>
                 </div>
-            </div>
+            </form>
 
             <!-- Progress Overlay (Hidden by default) -->
             <div id="scanProgress" class="glass-card mb-4 d-none">
@@ -218,6 +209,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="js/theme.js"></script>
-<script src="js/website-audit.js"></script>
+<script src="js/website-audit.js?v=8"></script>
 </body>
 </html>

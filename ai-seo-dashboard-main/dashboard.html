@@ -43,17 +43,8 @@
             <a href="keyword-research.html" class="sidebar-link">
                 <i class="bi bi-key"></i> Keyword Research
             </a>
-            <a href="competitor-analysis.html" class="sidebar-link">
-                <i class="bi bi-people"></i> Competitor Analysis
-            </a>
-            <a href="backlinks.html" class="sidebar-link">
-                <i class="bi bi-link-45deg"></i> Backlinks
-            </a>
             <a href="content-optimizer.html" class="sidebar-link">
                 <i class="bi bi-file-earmark-text"></i> Content Optimizer
-            </a>
-            <a href="technical-seo.html" class="sidebar-link">
-                <i class="bi bi-gear"></i> Technical SEO
             </a>
             
             <div class="sidebar-heading">Data & Reports</div>
@@ -140,8 +131,8 @@
                         </div>
                         <div class="stat-details">
                             <h4>Avg SEO Score</h4>
-                            <div class="stat-value"><span class="counter-value" data-target="86">0</span></div>
-                            <div class="stat-change up"><i class="bi bi-arrow-up-short"></i> 4.5% vs last month</div>
+                            <div class="stat-value"><span id="averageSeo" class="counter-value" data-target="0">0</span></div>
+                            <div class="stat-change"><i class="bi bi-speedometer2"></i> Across saved audits</div>
                         </div>
                     </div>
                 </div>
@@ -151,9 +142,9 @@
                             <i class="bi bi-graph-up-arrow"></i>
                         </div>
                         <div class="stat-details">
-                            <h4>Organic Traffic</h4>
-                            <div class="stat-value"><span class="counter-value" data-target="24.5">0</span>k</div>
-                            <div class="stat-change up"><i class="bi bi-arrow-up-short"></i> 12.3% vs last month</div>
+                            <h4>Audits Run</h4>
+                            <div class="stat-value"><span id="auditCount" class="counter-value" data-target="0">0</span></div>
+                            <div class="stat-change"><i class="bi bi-database-check"></i> Saved in your workspace</div>
                         </div>
                     </div>
                 </div>
@@ -163,9 +154,9 @@
                             <i class="bi bi-key"></i>
                         </div>
                         <div class="stat-details">
-                            <h4>Total Keywords</h4>
-                            <div class="stat-value"><span class="counter-value" data-target="1240">0</span></div>
-                            <div class="stat-change up"><i class="bi bi-arrow-up-short"></i> 18 new keywords</div>
+                            <h4>Avg Content Score</h4>
+                            <div class="stat-value"><span id="averageContent" class="counter-value" data-target="0">0</span></div>
+                            <div class="stat-change"><i class="bi bi-file-earmark-check"></i> Across saved audits</div>
                         </div>
                     </div>
                 </div>
@@ -175,9 +166,9 @@
                             <i class="bi bi-link-45deg"></i>
                         </div>
                         <div class="stat-details">
-                            <h4>Backlinks</h4>
-                            <div class="stat-value"><span class="counter-value" data-target="850">0</span></div>
-                            <div class="stat-change down"><i class="bi bi-arrow-down-short"></i> 3 lost links</div>
+                            <h4>Avg Health Score</h4>
+                            <div class="stat-value"><span id="averageHealth" class="counter-value" data-target="0">0</span></div>
+                            <div class="stat-change"><i class="bi bi-heart-pulse"></i> Across saved audits</div>
                         </div>
                     </div>
                 </div>
@@ -188,7 +179,7 @@
                 <div class="col-lg-8">
                     <div class="glass-card h-100 fade-in-up">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h4 class="mb-0 fs-5 fw-semibold">Organic Traffic Trend</h4>
+                            <h4 class="mb-0 fs-5 fw-semibold">Audit Activity Trend</h4>
                             <select class="form-select w-auto form-control form-control-sm">
                                 <option>Last 30 Days</option>
                                 <option>Last 3 Months</option>
@@ -210,7 +201,7 @@
                         </div>
                         <div class="text-center mt-3">
                             <div class="status-badge status-success mb-2">Good</div>
-                            <p class="text-muted small">Your site is performing well, but there is room for optimization in Technical SEO.</p>
+                            <p class="text-muted small">Your site is performing well, but there is still room for optimization.</p>
                         </div>
                         <div class="mt-4 pt-3 border-top border-secondary">
                             <div class="d-flex justify-content-between mb-2 small">
