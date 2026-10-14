@@ -1,17 +1,34 @@
 /**
  * AI SEO Growth Dashboard - Keyword Research JS
+ * Uses the backend /keyword-research API with DataForSEO
  */
+
+let lastKeywords = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     const searchBtn = document.getElementById('searchKeywordBtn');
-    
+    const keywordInput = document.getElementById('keywordInput');
+
     if (searchBtn) {
         searchBtn.addEventListener('click', performSearch);
+    }
+    if (keywordInput) {
+        keywordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+    }
+
+    // Wire up CSV export button
+    const exportBtn = document.querySelector('[data-action="export-csv"]');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', exportToCSV);
     }
 });
 
 async function performSearch() {
     const kwInput = document.getElementById('keywordInput').value.trim();
+    const market = document.getElementById('marketSelect')?.value || 'in'; // Default to India if not specified
+
     if (!kwInput) {
         showNotification("Please enter a seed keyword", "warning");
         return;
@@ -19,71 +36,156 @@ async function performSearch() {
 
     const btn = document.getElementById('searchKeywordBtn');
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Fetching...';
+
+    document.getElementById('resultsSection').classList.add('d-none');
 
     try {
-        const response = await fetch('http://127.0.0.1:5000/keyword-research', {
+        const backendRes = await fetch('http://127.0.0.1:5000/keyword-research', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ keyword: kwInput })
+            body: JSON.stringify({ keyword: kwInput, market })
         });
-        const result = await response.json();
-        if (!response.ok || !result.success) throw new Error(result.message || 'Keyword research failed');
-        renderKeywordResults(result.data);
+
+        const backendData = await backendRes.json();
+        if (!backendRes.ok || !backendData.success) {
+            throw new Error(backendData.message || 'No suggestions found.');
+        }
+
+        const suggestions = backendData.data.keywords;
+        lastKeywords = suggestions;
+
+        renderKeywordResults(suggestions, backendData.data.summary || null);
         document.getElementById('resultsSection').classList.remove('d-none');
-        showNotification("Keywords analyzed successfully", "success");
+
+        if (backendData.data.source === 'dataforseo') {
+            showNotification("Keywords analyzed with real DataForSEO metrics!", "success");
+        } else {
+            showNotification("Live Google suggestions & keyword metrics loaded!", "success");
+        }
+
     } catch (error) {
-        showNotification(error.message, "danger");
+        console.error(error);
+        showNotification(error.message || "An error occurred. Is the backend running?", "danger");
     } finally {
         btn.disabled = false;
         btn.innerHTML = 'Analyze';
     }
 }
 
-function renderKeywordResults(data) {
-    // Generate some random variations based on the seed
+function renderKeywordResults(keywords, summary) {
     const tbody = document.getElementById('keywordTableBody');
     tbody.innerHTML = '';
 
-    data.keywords.forEach(row => {
-        const intent = { I: ['Informational', 'intent-info'], N: ['Navigational', 'intent-nav'], C: ['Commercial', 'intent-comm'], T: ['Transactional', 'intent-trans'] }[row.intent] || ['Informational', 'intent-info'];
-        const sparkline = generateSparkline(row.trend);
+    const intentMap = {
+        I: ['Informational', 'intent-info'],
+        N: ['Navigational', 'intent-nav'],
+        C: ['Commercial', 'intent-comm'],
+        T: ['Transactional', 'intent-trans']
+    };
 
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td class="fw-medium text-primary"><i class="bi bi-search me-2 text-muted"></i> ${row.keyword}</td>
-            <td><span class="intent-badge ${intent[1]}" title="${intent[0]}">${row.intent}</span></td>
-            <td>${row.volume.toLocaleString()}</td>
-            <td>
+    keywords.forEach(row => {
+        const intent = intentMap[row.intent] || intentMap['I'];
+
+        const volumeCell = row.volume != null
+            ? row.volume.toLocaleString()
+            : '<span class="text-muted small">N/A</span>';
+            
+        const cpcCell = row.cpc != null
+            ? `$${row.cpc.toFixed(2)}`
+            : '<span class="text-muted small">N/A</span>';
+
+        let difficultyCell = '<span class="text-muted small">N/A</span>';
+        if (row.difficulty != null) {
+            const diffColor = row.difficulty > 60 ? 'bg-danger' : (row.difficulty > 30 ? 'bg-warning' : 'bg-success');
+            difficultyCell = `
                 <div class="d-flex align-items-center gap-2">
                     <span>${row.difficulty}</span>
                     <div class="progress" style="width: 50px; height: 6px; background: rgba(255,255,255,0.1);">
-                        <div class="progress-bar ${row.difficulty > 60 ? 'bg-danger' : (row.difficulty > 30 ? 'bg-warning' : 'bg-success')}" style="width: ${row.difficulty}%"></div>
+                        <div class="progress-bar ${diffColor}" style="width: ${row.difficulty}%"></div>
                     </div>
-                </div>
-            </td>
-            <td>$${row.cpc.toFixed(2)}</td>
-            <td>
-                <img src="${sparkline}" alt="trend" style="height: 25px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
-            </td>
+                </div>`;
+        }
+        
+        let competitionCell = '<span class="text-muted small">N/A</span>';
+        if (row.competition_level != null) {
+            const compText = row.competition_level.toUpperCase();
+            const compColor = compText === 'HIGH' ? 'danger' : (compText === 'MEDIUM' ? 'warning' : 'success');
+            competitionCell = `<span class="badge bg-${compColor} bg-opacity-20 text-${compColor} border border-${compColor}">${compText}</span>`;
+        } else if (row.competition != null) {
+            const compVal = row.competition;
+            const compColor = compVal > 0.66 ? 'danger' : (compVal > 0.33 ? 'warning' : 'success');
+            const text = compVal > 0.66 ? 'HIGH' : (compVal > 0.33 ? 'MEDIUM' : 'LOW');
+            competitionCell = `<span class="badge bg-${compColor} bg-opacity-20 text-${compColor} border border-${compColor}">${text}</span>`;
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="fw-medium"><i class="bi bi-search me-2 text-muted"></i>${row.keyword}</td>
+            <td><span class="intent-badge ${intent[1]}" title="${intent[0]}">${row.intent}</span></td>
+            <td>${volumeCell}</td>
+            <td>${cpcCell}</td>
+            <td>${competitionCell}</td>
+            <td>${difficultyCell}</td>
         `;
         tbody.appendChild(tr);
     });
 
-    document.getElementById('volVal').innerText = Math.round(data.summary.volume / 1000) + 'K';
-    document.getElementById('kdVal').innerText = data.summary.difficulty + '%';
-    document.getElementById('cpcVal').innerText = '$' + data.summary.cpc.toFixed(2);
+    if (summary) {
+        document.getElementById('volVal').innerText = summary.volume != null
+            ? (Math.round(summary.volume / 1000) + 'K') : 'N/A';
+        document.getElementById('kdVal').innerText = summary.difficulty != null
+            ? (summary.difficulty + '%') : 'N/A';
+        document.getElementById('cpcVal').innerText = summary.cpc != null
+            ? ('$' + summary.cpc.toFixed(2)) : 'N/A';
+
+        const globalVolEl = document.getElementById('globalVolVal');
+        if (globalVolEl) {
+            globalVolEl.innerText = 'N/A';
+        }
+
+        const kdTextEl = document.getElementById('kdTextVal');
+        if (kdTextEl && summary.difficulty != null) {
+            if (summary.difficulty > 70) { kdTextEl.innerText = 'Hard'; kdTextEl.className = 'small text-danger'; }
+            else if (summary.difficulty > 30) { kdTextEl.innerText = 'Medium'; kdTextEl.className = 'small text-warning'; }
+            else { kdTextEl.innerText = 'Easy'; kdTextEl.className = 'small text-success'; }
+        } else if (kdTextEl) {
+            kdTextEl.innerText = '-';
+        }
+    } else {
+        ['volVal', 'kdVal', 'cpcVal', 'globalVolVal'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerText = 'N/A';
+        });
+        const kdTextEl = document.getElementById('kdTextVal');
+        if (kdTextEl) kdTextEl.innerText = '-';
+    }
 }
 
-function generateSparkline(values) {
-    // Generates a simple SVG sparkline data URI
-    const pts = [];
-    values.forEach((value, index) => pts.push(`${index * 12},${30 - value}`));
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const color = isDark ? '#4F46E5' : '#4F46E5';
-    
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="90" height="30" viewBox="0 0 90 30">
-        <polyline points="${pts.join(' ')}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>`;
-    return 'data:image/svg+xml;base64,' + btoa(svg);
+function exportToCSV() {
+    if (!lastKeywords.length) {
+        showNotification("No keyword data to export. Run a search first.", "warning");
+        return;
+    }
+    const intentLabels = { I: 'Informational', N: 'Navigational', C: 'Commercial', T: 'Transactional' };
+    const rows = [
+        ['Keyword', 'Intent', 'Volume', 'CPC', 'Competition', 'Difficulty'],
+        ...lastKeywords.map(k => [
+            `"${k.keyword}"`,
+            intentLabels[k.intent] || k.intent,
+            k.volume ?? 'N/A',
+            k.cpc != null ? `$${k.cpc.toFixed(2)}` : 'N/A',
+            k.competition_level ?? 'N/A',
+            k.difficulty ?? 'N/A'
+        ])
+    ];
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `keywords_${document.getElementById('keywordInput').value.trim().replace(/\s+/g, '_')}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showNotification("Keywords exported to CSV!", "success");
 }

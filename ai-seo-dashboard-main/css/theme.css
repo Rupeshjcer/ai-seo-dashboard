@@ -56,8 +56,17 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* --- Dark Mode Override (Default) --- */
-[data-theme="dark"], body {
+/* --- Light Mode Glow Effects --- */
+:root {
+    --glow-primary: 0 0 12px rgba(79, 70, 229, 0.25);
+    --glow-secondary: 0 0 12px rgba(124, 58, 237, 0.25);
+    --glow-success: 0 0 12px rgba(34, 197, 94, 0.25);
+    --glow-warning: 0 0 12px rgba(245, 158, 11, 0.25);
+    --glow-danger: 0 0 12px rgba(239, 68, 68, 0.25);
+}
+
+/* --- Dark Mode Override --- */
+[data-theme="dark"] {
     --bg-body: #0F172A;
     --bg-sidebar: rgba(30, 41, 59, 0.7);
     --bg-navbar: rgba(15, 23, 42, 0.8);
@@ -95,16 +104,29 @@
     font-family: var(--font-family);
 }
 
+html {
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
 body {
     background-color: var(--bg-body);
     color: var(--text-primary);
-    transition: var(--transition);
+    transition: background-color 0.4s ease, color 0.4s ease;
     overflow-x: hidden;
     position: relative;
-    /* Soft animated gradient background for dark mode */
+    background-attachment: fixed;
+}
+
+/* Light mode soft background */
+[data-theme="light"] body {
+    background-image: radial-gradient(circle at 15% 50%, rgba(79, 70, 229, 0.04), transparent 25%),
+                      radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.04), transparent 25%);
+}
+
+/* Dark mode soft background */
+[data-theme="dark"] body {
     background-image: radial-gradient(circle at 15% 50%, rgba(79, 70, 229, 0.08), transparent 25%),
                       radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.08), transparent 25%);
-    background-attachment: fixed;
 }
 
 /* Custom Scrollbar */
@@ -746,6 +768,181 @@ a:hover {
 .skeleton-text { height: 1em; margin-bottom: 0.5rem; width: 100%; }
 .skeleton-title { height: 1.5em; margin-bottom: 1rem; width: 60%; }
 .skeleton-chart { height: 250px; width: 100%; border-radius: var(--border-radius-sm); }
+
+/* ==========================================================================
+   Theme Toggle Switch (Day / Night)
+   ========================================================================== */
+.theme-switch {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.theme-switch__track {
+    position: relative;
+    width: 56px;
+    height: 28px;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border: 1px solid var(--border-color);
+    transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    overflow: hidden;
+}
+
+[data-theme="light"] .theme-switch__track {
+    background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
+    border-color: rgba(96, 165, 250, 0.3);
+    box-shadow: 0 0 12px rgba(96, 165, 250, 0.2);
+}
+
+[data-theme="dark"] .theme-switch__track {
+    box-shadow: 0 0 12px rgba(79, 70, 229, 0.15);
+}
+
+/* Stars in dark mode */
+.theme-switch__track::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 8px;
+    width: 3px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    box-shadow:
+        8px 4px 0 0 rgba(255, 255, 255, 0.5),
+        14px -1px 0 -0.5px rgba(255, 255, 255, 0.4),
+        6px 12px 0 -0.5px rgba(255, 255, 255, 0.3);
+    transition: opacity 0.4s ease;
+    opacity: 1;
+}
+
+[data-theme="light"] .theme-switch__track::before {
+    opacity: 0;
+}
+
+/* Clouds in light mode */
+.theme-switch__track::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    right: 6px;
+    width: 14px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 10px;
+    box-shadow:
+        -6px -3px 0 1px rgba(255, 255, 255, 0.4);
+    transition: opacity 0.4s ease;
+    opacity: 0;
+}
+
+[data-theme="light"] .theme-switch__track::after {
+    opacity: 1;
+}
+
+.theme-switch__thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    transition: transform 0.4s cubic-bezier(0.68, -0.15, 0.265, 1.35),
+                background 0.4s ease,
+                box-shadow 0.4s ease;
+    z-index: 2;
+}
+
+/* Moon (dark mode) */
+[data-theme="dark"] .theme-switch__thumb {
+    transform: translateX(0);
+    background: linear-gradient(135deg, #c4b5fd 0%, #8b5cf6 100%);
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.5),
+                inset -2px -1px 0 0 rgba(109, 40, 217, 0.3);
+}
+
+/* Sun (light mode) */
+[data-theme="light"] .theme-switch__thumb {
+    transform: translateX(28px);
+    background: linear-gradient(135deg, #fde68a 0%, #f59e0b 100%);
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.5),
+                0 0 20px rgba(245, 158, 11, 0.2);
+}
+
+.theme-switch__icon {
+    font-size: 0.8rem;
+    line-height: 1;
+}
+
+[data-theme="dark"] .theme-switch__icon {
+    color: #1e1b4b;
+}
+
+[data-theme="light"] .theme-switch__icon {
+    color: #92400e;
+}
+
+.theme-switch__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    min-width: 28px;
+    transition: color 0.4s ease;
+}
+
+/* --- Smooth Theme Transitions for all themed elements --- */
+.sidebar,
+.top-navbar,
+.glass-card,
+.search-input,
+.action-btn,
+.user-profile,
+.form-control,
+.form-select,
+.input-group-text,
+.table-glass td,
+.stat-icon,
+.sidebar-link,
+.sidebar-brand,
+.sidebar-heading,
+.btn-outline,
+.status-badge,
+.score-meter::before {
+    transition: background-color 0.4s ease,
+                color 0.4s ease,
+                border-color 0.4s ease,
+                box-shadow 0.4s ease;
+}
+
+/* --- Form Select Theming --- */
+.form-select {
+    background-color: var(--glass-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: var(--border-radius-sm);
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+.form-select:focus {
+    background-color: var(--bg-sidebar);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    color: var(--text-primary);
+}
+
+.form-select option {
+    background-color: var(--bg-sidebar);
+    color: var(--text-primary);
+}
 
 /* ==========================================================================
    Responsive Design

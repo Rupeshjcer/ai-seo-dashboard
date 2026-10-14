@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <script>
+        (function() {
+            var theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation | AI SEO Growth Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/user-display.css">
+    <style>
+        .doc-section {
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .doc-section h2 {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        .doc-section h3 {
+            color: var(--text-primary);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .doc-section p, .doc-section li {
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+        .doc-toc {
+            position: sticky;
+            top: 100px;
+        }
+        .doc-toc-link {
+            display: block;
+            padding: 0.5rem 0;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .doc-toc-link:hover {
+            color: var(--primary-color);
+        }
+        .feature-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="icon-wrapper"><i class="bi bi-graph-up-arrow"></i></div> AI SEO
+        </div>
+        <nav class="sidebar-nav mt-3">
+            <div class="sidebar-heading">Main Menu</div>
+            <a href="dashboard.html" class="sidebar-link"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+            <div class="sidebar-heading">SEO Tools</div>
+            <a href="website-audit.html" class="sidebar-link"><i class="bi bi-search"></i> Website Audit</a>
+            <a href="seo-analysis.html" class="sidebar-link"><i class="bi bi-bar-chart"></i> SEO Analysis</a>
+            <a href="keyword-research.html" class="sidebar-link"><i class="bi bi-key"></i> Keyword Research</a>
+            <a href="content-optimizer.html" class="sidebar-link"><i class="bi bi-file-earmark-text"></i> Content Optimizer</a>
+
+
+            <a href="recommendations.html" class="sidebar-link"><i class="bi bi-lightbulb"></i> AI Recommendations</a>
+            <div class="sidebar-heading">Account</div>
+            <a href="profile.html" class="sidebar-link"><i class="bi bi-person"></i> Profile</a>
+            <a href="help.html" class="sidebar-link"><i class="bi bi-question-circle"></i> Help & Support</a>
+        </nav>
+        <div class="mt-auto pt-3">
+            <a href="#" id="logoutBtn" class="sidebar-link text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-list mobile-toggle" id="mobileSidebarToggle"></i>
+                <h4 class="mb-0 d-none d-md-block m-0" style="color: var(--text-primary);">Documentation</h4>
+            </div>
+            <div class="nav-actions">
+                <div class="theme-switch" id="themeToggle" title="Toggle Day/Night Mode" role="switch" aria-label="Toggle theme">
+                    <span class="theme-switch__label">Dark</span>
+                    <div class="theme-switch__track">
+                        <div class="theme-switch__thumb">
+                            <i class="bi bi-moon-stars-fill theme-switch__icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <a href="profile.html" class="user-profile-chip" id="userProfileChip">
+                    <div class="user-avatar-purple" id="userAvatarPill"></div>
+                    <span class="user-name-text" id="userNamePill"></span>
+                </a>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <div class="page-header fade-in-up pb-4">
+                <h1 class="page-title fs-2">Project Documentation</h1>
+                <p class="text-muted">Comprehensive guide to the AI SEO Growth Dashboard.</p>
+            </div>
+
+            <div class="row">
+                <!-- Main Content -->
+                <div class="col-lg-9">
+                    <!-- Project Overview -->
+                    <div id="overview" class="glass-card doc-section fade-in-up delay-100">
+                        <h2>Project Overview</h2>
+                        <p>The <strong>AI SEO Growth Dashboard</strong> is a comprehensive, modern web application designed to help digital marketers, agencies, and website owners track, analyze, and optimize their search engine performance. It combines beautiful glassmorphic UI design with powerful functional tools.</p>
+                        <h3>Objectives</h3>
+                        <ul>
+                            <li>Provide a centralized hub for all SEO-related activities.</li>
+                            <li>Offer actionable insights and data visualization.</li>
+                            <li>Ensure a premium, responsive, and seamless user experience.</li>
+                            <li>Maintain robust security with user authentication and data protection.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Getting Started -->
+                    <div id="getting-started" class="glass-card doc-section fade-in-up delay-200">
+                        <h2>Getting Started</h2>
+                        <p>To access the application, users must first register for an account or log in if they already have one. The dashboard is accessible via a web browser and is fully responsive for desktop and mobile devices.</p>
+                        <p>Upon successful login, you will be redirected to the main Dashboard page, which provides a high-level overview of your SEO metrics and quick links to core features.</p>
+                    </div>
+
+                    <!-- Authentication -->
+                    <div id="authentication" class="glass-card doc-section fade-in-up delay-300">
+                        <h2>Authentication & Security</h2>
+                        <p>The application implements a secure authentication flow backed by a Python Flask API and SQLite database.</p>
+                        <ul>
+                            <li><strong>Registration:</strong> New users can create an account by providing their full name, email, and a secure password.</li>
+                            <li><strong>Login:</strong> Existing users authenticate using their email and password.</li>
+                            <li><strong>Password Hashing:</strong> Passwords are never stored in plain text. The backend utilizes Werkzeug's secure <code>scrypt</code> (or <code>pbkdf2</code>) hashing algorithms to encrypt passwords before storing them in the <code>users</code> database table.</li>
+                            <li><strong>Session Management:</strong> User sessions and basic profile data are securely managed and synchronized across the interface via <code>localStorage</code> and API validations.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Dashboard -->
+                    <div id="dashboard" class="glass-card doc-section fade-in-up">
+                        <h2>Dashboard</h2>
+                        <p>The Dashboard is the central control panel, providing an at-a-glance view of essential metrics.</p>
+                        <ul>
+                            <li><strong>Key Metrics:</strong> Displays aggregated data such as total site traffic, average keyword rankings, active backlinks, and overall SEO health scores.</li>
+                            <li><strong>Quick Actions:</strong> Immediate access to core tools like starting a new Website Audit or navigating to Content Optimization.</li>
+                            <li><strong>Layout:</strong> Uses a clean, grid-based layout with interactive charts and dynamic widgets that adapt to different screen sizes.</li>
+                        </ul>
+                    </div>
+
+                    <!-- SEO Analysis -->
+                    <div id="seo-analysis" class="glass-card doc-section fade-in-up">
+                        <h2>SEO Analysis <span class="feature-badge">In Progress</span></h2>
+                        <p>The SEO Analysis module is designed for deep, technical on-page and off-page evaluations.</p>
+                        <p><strong>Note:</strong> This feature is currently in active development. When completed, it will provide detailed breakdowns of meta tags, header structures, image optimization, and technical performance indicators to improve page-level SEO.</p>
+                    </div>
+
+                    <!-- Keyword Research -->
+                    <div id="keyword-research" class="glass-card doc-section fade-in-up">
+                        <h2>Keyword Research</h2>
+                        <p>The Keyword Research tool allows users to discover new opportunities and analyze search trends.</p>
+                        <ul>
+                            <li><strong>Google Autocomplete Integration:</strong> Fetches live keyword suggestions directly from Google's autocomplete API based on user input and selected market (e.g., US, UK, India).</li>
+                            <li><strong>Metrics:</strong> While keyword ideas are fetched live, specific metrics like Search Volume and Keyword Difficulty are displayed as placeholders until a paid data provider API is integrated.</li>
+                            <li><strong>Usage:</strong> Simply type a seed keyword, select a target region, and click Search to generate a list of relevant long-tail keyword ideas.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Content Optimizer -->
+                    <div id="content-optimizer" class="glass-card doc-section fade-in-up">
+                        <h2>Content Optimizer <span class="feature-badge">In Progress</span></h2>
+                        <p>The Content Optimizer helps writers create SEO-friendly articles that rank higher in search results.</p>
+                        <p><strong>Note:</strong> This feature is currently a structural preview. Its planned functionality involves utilizing Natural Language Processing (NLP) to compare your draft content against top-ranking pages for a specific target keyword, providing real-time suggestions on keyword density, readability, and semantic relevance.</p>
+                    </div>
+
+                    <!-- User Profile -->
+                    <div id="user-profile" class="glass-card doc-section fade-in-up">
+                        <h2>User Profile & Settings</h2>
+                        <p>Users can manage their personal information and security settings directly from the application.</p>
+                        <ul>
+                            <li><strong>Profile Management:</strong> View and update your Full Name. The system dynamically syncs this data with the backend database and updates the UI (including the top navigation avatar) in real-time.</li>
+                            <li><strong>Email:</strong> Displays the currently logged-in user's registered email address (read-only for security purposes).</li>
+                            <li><strong>Password Reset:</strong> A fully functional, secure password change utility. It requires the user to input their current password for verification, checks the new password for length requirements, and securely updates the hash in the database.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Table of Contents Sidebar -->
+                <div class="col-lg-3 d-none d-lg-block">
+                    <div class="glass-card doc-toc p-4">
+                        <h5 class="mb-3">Contents</h5>
+                        <nav>
+                            <a href="#overview" class="doc-toc-link">Project Overview</a>
+                            <a href="#getting-started" class="doc-toc-link">Getting Started</a>
+                            <a href="#authentication" class="doc-toc-link">Authentication</a>
+                            <a href="#dashboard" class="doc-toc-link">Dashboard</a>
+                            <a href="#seo-analysis" class="doc-toc-link">SEO Analysis</a>
+                            <a href="#keyword-research" class="doc-toc-link">Keyword Research</a>
+                            <a href="#content-optimizer" class="doc-toc-link">Content Optimizer</a>
+                            <a href="#user-profile" class="doc-toc-link">User Profile</a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/user-display.js"></script>
+<script>
+    // Simple smooth scroll for TOC
+    document.querySelectorAll('.doc-toc-link').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            if(targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+</script>
+</body>
+</html>

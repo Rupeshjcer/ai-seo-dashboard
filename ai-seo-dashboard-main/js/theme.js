@@ -3,12 +3,62 @@
  * Handles Dark Mode, Sidebar, Animations, and Shared Utilities
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+function initAll() {
+    checkAuth();
     initTheme();
     initSidebar();
     initScrollAnimations();
     initCounters();
-});
+    initLogout();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+} else {
+    initAll();
+}
+
+// ==========================================
+// Authentication & Logout
+// ==========================================
+function checkAuth() {
+    const userId = localStorage.getItem('user_id');
+    const fullname = localStorage.getItem('fullname');
+    
+    if (!userId || !fullname) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // Set dynamic user name (replaces hardcoded placeholder)
+    const nameDisplays = document.querySelectorAll('#userNameDisplay, #userNameGreeting, #profileName');
+    nameDisplays.forEach(el => {
+        el.textContent = fullname;
+    });
+
+    // Update avatar initials
+    const avatars = document.querySelectorAll('.user-avatar');
+    const initials = fullname.trim().split(/\s+/).map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    avatars.forEach(el => {
+        el.textContent = initials;
+    });
+}
+
+function initLogout() {
+    // Select all logout buttons in case there are multiple (e.g. mobile vs desktop sidebar)
+    const logoutBtns = document.querySelectorAll('#logoutBtn');
+    logoutBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Clear all session data, tokens, and local storage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Redirect to login page
+            window.location.replace('login.html'); // replace prevents navigating back
+        });
+    });
+}
 
 // ==========================================
 // Theme Management (Dark/Light Mode)
@@ -21,18 +71,18 @@ function initTheme() {
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    // Default to dark mode if nothing saved
-    const currentTheme = savedTheme || (prefersDark ? 'dark' : 'dark');
+    // Default to saved, then system preference, then dark
+    const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
     
     htmlTag.setAttribute('data-theme', currentTheme);
-    updateThemeIcon(currentTheme);
+    updateThemeSwitch(currentTheme);
 
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
             const newTheme = htmlTag.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             htmlTag.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
+            updateThemeSwitch(newTheme);
             
             // Dispatch event for charts to update colors
             window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: newTheme } }));
@@ -40,16 +90,17 @@ function initTheme() {
     }
 }
 
-function updateThemeIcon(theme) {
-    const icon = document.querySelector('#themeToggle i');
+function updateThemeSwitch(theme) {
+    const icon = document.querySelector('#themeToggle .theme-switch__icon');
+    const label = document.querySelector('#themeToggle .theme-switch__label');
     if (!icon) return;
     
     if (theme === 'dark') {
-        icon.className = 'bi bi-sun-fill';
-        icon.style.color = '#F59E0B'; // Sun color
+        icon.className = 'bi bi-moon-stars-fill theme-switch__icon';
+        if (label) label.textContent = 'Dark';
     } else {
-        icon.className = 'bi bi-moon-stars-fill';
-        icon.style.color = '#4F46E5'; // Moon color
+        icon.className = 'bi bi-sun-fill theme-switch__icon';
+        if (label) label.textContent = 'Light';
     }
 }
 

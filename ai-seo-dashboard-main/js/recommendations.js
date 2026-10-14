@@ -42,7 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadRecommendations(button) {
     if (button) button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Loading...';
     try {
-        const response = await fetch('http://127.0.0.1:5000/recommendations');
+        const userId = localStorage.getItem('user_id') || 1;
+        const response = await fetch(`http://127.0.0.1:5000/recommendations?user_id=${userId}`);
         const result = await response.json();
         if (!response.ok || !result.success) throw new Error(result.message || 'Could not load recommendations');
         recommendations = result.data;

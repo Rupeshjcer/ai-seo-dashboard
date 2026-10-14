@@ -44,6 +44,7 @@ document.getElementById("loginBtn").addEventListener("click", async function () 
         if (result.success) {
             localStorage.setItem("user_id", result.user_id);
             localStorage.setItem("fullname", result.fullname);
+            localStorage.setItem("email", result.email);
             // Optional: store auth token if implemented later
             
             // Success animation

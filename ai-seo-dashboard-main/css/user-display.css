@@ -1,0 +1,44 @@
+.user-profile-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 16px 6px 6px;
+    border-radius: 50px;
+    background-color: var(--glass-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+    text-decoration: none;
+    color: var(--text-primary, #111827);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+/* For dark mode / dark themes common in dashboards */
+[data-theme="dark"] .user-profile-chip,
+body.dark-mode .user-profile-chip {
+    color: #e5e7eb;
+}
+
+.user-profile-chip:hover {
+    background-color: rgba(139, 92, 246, 0.1); /* Subtle purple hover */
+    border-color: rgba(139, 92, 246, 0.3);
+}
+
+.user-avatar-purple {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.user-name-text {
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+}

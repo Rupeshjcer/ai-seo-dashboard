@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+    <script>
+        // Prevent flash of wrong theme on page load
+        (function() {
+            var theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | AI SEO Growth</title>
@@ -13,6 +20,7 @@
     <!-- Custom Theme & CSS -->
     <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/user-display.css">
 </head>
 <body>
 
@@ -47,21 +55,13 @@
                 <i class="bi bi-file-earmark-text"></i> Content Optimizer
             </a>
             
-            <div class="sidebar-heading">Data & Reports</div>
-            <a href="analytics.html" class="sidebar-link">
-                <i class="bi bi-graph-up"></i> Analytics
-            </a>
-            <a href="reports.html" class="sidebar-link">
-                <i class="bi bi-file-earmark-pdf"></i> Reports
-            </a>
+
+
             <a href="recommendations.html" class="sidebar-link">
                 <i class="bi bi-lightbulb"></i> AI Recommendations
             </a>
 
             <div class="sidebar-heading">Account</div>
-            <a href="settings.html" class="sidebar-link">
-                <i class="bi bi-sliders"></i> Settings
-            </a>
             <a href="profile.html" class="sidebar-link">
                 <i class="bi bi-person"></i> Profile
             </a>
@@ -84,26 +84,22 @@
         <header class="top-navbar">
             <div class="d-flex align-items-center gap-3">
                 <i class="bi bi-list mobile-toggle" id="mobileSidebarToggle"></i>
-                <div class="search-wrapper">
-                    <i class="bi bi-search"></i>
-                    <input type="text" class="search-input" placeholder="Search projects, keywords...">
-                </div>
+
             </div>
 
             <div class="nav-actions">
-                <button class="action-btn" id="themeToggle" title="Toggle Theme">
-                    <i class="bi bi-sun-fill" style="color: #F59E0B;"></i>
-                </button>
-                <button class="action-btn" title="Notifications">
-                    <i class="bi bi-bell"></i>
-                    <span class="badge"></span>
-                </button>
-                <a href="profile.html" class="user-profile">
-                    <div class="user-avatar">AD</div>
-                    <div class="user-info">
-                        <span class="user-name" id="userNameDisplay">Admin</span>
-                        <span class="user-role">Pro Plan</span>
+                <div class="theme-switch" id="themeToggle" title="Toggle Day/Night Mode" role="switch" aria-label="Toggle theme">
+                    <span class="theme-switch__label">Dark</span>
+                    <div class="theme-switch__track">
+                        <div class="theme-switch__thumb">
+                            <i class="bi bi-moon-stars-fill theme-switch__icon"></i>
+                        </div>
                     </div>
+                </div>
+
+                <a href="profile.html" class="user-profile-chip" id="userProfileChip">
+                    <div class="user-avatar-purple" id="userAvatarPill"></div>
+                    <span class="user-name-text" id="userNamePill"></span>
                 </a>
             </div>
         </header>
@@ -112,7 +108,7 @@
         <div class="page-content">
             <div class="page-header fade-in-up">
                 <div>
-                    <h1 class="page-title">Welcome Back, <span id="userNameGreeting" class="text-primary">Admin</span> 👋</h1>
+                    <h1 class="page-title">Welcome Back, <span id="userNameGreeting" class="text-primary"></span> 👋</h1>
                     <p class="page-subtitle">Here is what's happening with your projects today.</p>
                 </div>
                 <div>
@@ -176,22 +172,7 @@
 
             <!-- Charts Section -->
             <div class="row g-4 mb-4">
-                <div class="col-lg-8">
-                    <div class="glass-card h-100 fade-in-up">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h4 class="mb-0 fs-5 fw-semibold">Audit Activity Trend</h4>
-                            <select class="form-select w-auto form-control form-control-sm">
-                                <option>Last 30 Days</option>
-                                <option>Last 3 Months</option>
-                                <option>This Year</option>
-                            </select>
-                        </div>
-                        <div class="chart-container" style="position: relative; height:300px;">
-                            <canvas id="trafficTrendChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
+                <div class="col-12">
                     <div class="glass-card h-100 fade-in-up delay-100">
                         <h4 class="mb-4 fs-5 fw-semibold">Overall SEO Health</h4>
                         <div class="d-flex justify-content-center mb-3">
@@ -221,75 +202,7 @@
                 </div>
             </div>
 
-            <!-- Recent Activity & Quick Actions -->
-            <div class="row g-4">
-                <div class="col-lg-8">
-                    <div class="glass-card fade-in-up">
-                        <h4 class="mb-4 fs-5 fw-semibold">Recent Audits</h4>
-                        <div class="table-responsive">
-                            <table class="table-glass" id="recentAuditsTable">
-                                <thead>
-                                    <tr>
-                                        <th>Project / URL</th>
-                                        <th>Date</th>
-                                        <th>Score</th>
-                                        <th>Issues</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td colspan="5" class="text-center text-muted py-4">Loading data...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4">
-                    <div class="glass-card fade-in-up delay-100">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h4 class="mb-0 fs-5 fw-semibold">AI Insights</h4>
-                            <span class="badge bg-primary rounded-pill">3 New</span>
-                        </div>
-                        
-                        <div class="ai-insight-list">
-                            <div class="insight-item mb-3 p-3 rounded" style="background: rgba(79, 70, 229, 0.05); border: 1px solid rgba(79, 70, 229, 0.2);">
-                                <div class="d-flex gap-3">
-                                    <i class="bi bi-magic text-primary fs-4 mt-1"></i>
-                                    <div>
-                                        <h6 class="mb-1 text-primary">Content Opportunity</h6>
-                                        <p class="mb-0 text-muted small">Update your "SEO Guide 2023" to 2024 to recapture lost traffic for 'seo tutorial'.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="insight-item mb-3 p-3 rounded" style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2);">
-                                <div class="d-flex gap-3">
-                                    <i class="bi bi-exclamation-triangle text-danger fs-4 mt-1"></i>
-                                    <div>
-                                        <h6 class="mb-1 text-danger">Critical Issue Detected</h6>
-                                        <p class="mb-0 text-muted small">3 pages returned 404 errors during the last crawl. Fix immediately.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="insight-item p-3 rounded" style="background: rgba(34, 197, 94, 0.05); border: 1px solid rgba(34, 197, 94, 0.2);">
-                                <div class="d-flex gap-3">
-                                    <i class="bi bi-graph-up-arrow text-success fs-4 mt-1"></i>
-                                    <div>
-                                        <h6 class="mb-1 text-success">Ranking Improved</h6>
-                                        <p class="mb-0 text-muted small">You jumped 4 positions for "best ai dashboard" (Now #2).</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <a href="recommendations.html" class="btn btn-outline w-100 mt-4">View All AI Insights</a>
-                    </div>
-                </div>
-            </div>
+
 
         </div> <!-- End Page Content -->
     </main>
@@ -301,5 +214,6 @@
 <script src="js/theme.js"></script>
 <script src="js/charts-config.js"></script>
 <script src="js/dashboard.js"></script>
+<script src="js/user-display.js"></script>
 </body>
 </html>

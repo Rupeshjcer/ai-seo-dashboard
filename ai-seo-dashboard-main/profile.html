@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+    <script>
+        // Prevent flash of wrong theme on page load
+        (function() {
+            var theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile | AI SEO Growth</title>
@@ -16,16 +23,8 @@
             box-shadow: 0 0 20px rgba(79, 70, 229, 0.4);
             position: relative;
         }
-        .profile-avatar-large .edit-btn {
-            position: absolute; bottom: 0; right: 0;
-            background: var(--surface); color: var(--text-primary);
-            border-radius: 50%; width: 35px; height: 35px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; border: 2px solid var(--border-color);
-            transition: var(--transition);
-        }
-        .profile-avatar-large .edit-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
     </style>
+    <link rel="stylesheet" href="css/user-display.css">
 </head>
 <body>
 <div class="app-container">
@@ -41,12 +40,10 @@
             <a href="seo-analysis.html" class="sidebar-link"><i class="bi bi-bar-chart"></i> SEO Analysis</a>
             <a href="keyword-research.html" class="sidebar-link"><i class="bi bi-key"></i> Keyword Research</a>
             <a href="content-optimizer.html" class="sidebar-link"><i class="bi bi-file-earmark-text"></i> Content Optimizer</a>
-            <div class="sidebar-heading">Data & Reports</div>
-            <a href="analytics.html" class="sidebar-link"><i class="bi bi-graph-up"></i> Analytics</a>
-            <a href="reports.html" class="sidebar-link"><i class="bi bi-file-earmark-pdf"></i> Reports</a>
+
+
             <a href="recommendations.html" class="sidebar-link"><i class="bi bi-lightbulb"></i> AI Recommendations</a>
             <div class="sidebar-heading">Account</div>
-            <a href="settings.html" class="sidebar-link"><i class="bi bi-sliders"></i> Settings</a>
             <a href="profile.html" class="sidebar-link active"><i class="bi bi-person"></i> Profile</a>
             <a href="help.html" class="sidebar-link"><i class="bi bi-question-circle"></i> Help & Support</a>
         </nav>
@@ -61,10 +58,17 @@
                 <i class="bi bi-list mobile-toggle" id="mobileSidebarToggle"></i>
             </div>
             <div class="nav-actions">
-                <button class="action-btn" id="themeToggle" title="Toggle Theme"><i class="bi bi-sun-fill" style="color: #F59E0B;"></i></button>
-                <a href="profile.html" class="user-profile">
-                    <div class="user-avatar">AD</div>
-                    <div class="user-info"><span class="user-name" id="userNameDisplay">Admin</span></div>
+                <div class="theme-switch" id="themeToggle" title="Toggle Day/Night Mode" role="switch" aria-label="Toggle theme">
+                    <span class="theme-switch__label">Dark</span>
+                    <div class="theme-switch__track">
+                        <div class="theme-switch__thumb">
+                            <i class="bi bi-moon-stars-fill theme-switch__icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <a href="profile.html" class="user-profile-chip" id="userProfileChip">
+                    <div class="user-avatar-purple" id="userAvatarPill"></div>
+                    <span class="user-name-text" id="userNamePill"></span>
                 </a>
             </div>
         </header>
@@ -80,25 +84,8 @@
             <div class="row g-4">
                 <div class="col-lg-4">
                     <div class="glass-card text-center fade-in-up">
-                        <div class="profile-avatar-large mb-4" id="largeAvatar">
-                            AD
-                            <div class="edit-btn"><i class="bi bi-camera"></i></div>
-                        </div>
-                        <h4 class="mb-1" id="profileName">Admin User</h4>
-                        <p class="text-muted mb-4" id="profileEmail">admin@example.com</p>
-                        
-                        <div class="d-flex justify-content-center gap-2 mb-4">
-                            <span class="badge bg-primary">Pro Plan</span>
-                            <span class="badge bg-secondary">Account Owner</span>
-                        </div>
-                        
-                        <hr class="border-secondary mb-4">
-                        
-                        <div class="text-start">
-                            <p class="mb-2"><i class="bi bi-building text-muted me-2"></i> Company Inc.</p>
-                            <p class="mb-2"><i class="bi bi-geo-alt text-muted me-2"></i> San Francisco, CA</p>
-                            <p class="mb-0"><i class="bi bi-calendar3 text-muted me-2"></i> Joined Jan 2024</p>
-                        </div>
+                        <div class="profile-avatar-large mb-4" id="largeAvatar"></div>
+                        <h4 class="mb-0" id="profileName"></h4>
                     </div>
                 </div>
 
@@ -121,11 +108,11 @@
                                     <div class="row g-3 mb-4">
                                         <div class="col-md-6">
                                             <label class="form-label">Full Name</label>
-                                            <input type="text" class="form-control" id="editName" value="Admin User">
+                                            <input type="text" class="form-control" id="editName" value="" placeholder="Full Name">
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Email Address</label>
-                                            <input type="email" class="form-control" id="editEmail" value="admin@example.com" disabled>
+                                            <input type="email" class="form-control" id="editEmail" value="" placeholder="Email Address" disabled>
                                             <div class="form-text text-muted">Email cannot be changed directly.</div>
                                         </div>
                                         <div class="col-md-6">
@@ -150,35 +137,25 @@
                             <!-- Security -->
                             <div class="tab-pane fade" id="security">
                                 <h5 class="mb-3 fs-6">Change Password</h5>
-                                <form>
+                                <form id="changePasswordForm">
                                     <div class="mb-3">
                                         <label class="form-label">Current Password</label>
-                                        <input type="password" class="form-control">
+                                        <input type="password" class="form-control" id="currentPassword" required autocomplete="current-password">
                                     </div>
                                     <div class="row g-3 mb-4">
                                         <div class="col-md-6">
                                             <label class="form-label">New Password</label>
-                                            <input type="password" class="form-control">
+                                            <input type="password" class="form-control" id="newPassword" required autocomplete="new-password">
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Confirm New Password</label>
-                                            <input type="password" class="form-control">
+                                            <input type="password" class="form-control" id="confirmPassword" required autocomplete="new-password">
                                         </div>
                                     </div>
-                                    <div class="text-end mb-5">
-                                        <button type="button" class="btn btn-primary">Update Password</button>
+                                    <div class="text-end">
+                                        <button type="button" class="btn btn-primary" id="updatePasswordBtn">Update Password</button>
                                     </div>
                                 </form>
-
-                                <hr class="border-secondary mb-4">
-                                
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <div>
-                                        <h5 class="fs-6 mb-1">Two-Factor Authentication</h5>
-                                        <p class="text-muted small mb-0">Add an extra layer of security to your account.</p>
-                                    </div>
-                                    <button class="btn btn-outline-success">Enable 2FA</button>
-                                </div>
                             </div>
                         </div>
 
@@ -191,6 +168,7 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/theme.js"></script>
-<script src="js/profile.js"></script>
+<script src="js/profile.js?v=1.1"></script>
+<script src="js/user-display.js?v=1.1"></script>
 </body>
 </html>

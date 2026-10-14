@@ -15,7 +15,34 @@ document.addEventListener('DOMContentLoaded', () => {
     if(analyzeBtn) {
         analyzeBtn.addEventListener('click', runAudit);
     }
+
+    loadExistingAudit();
 });
+
+async function loadExistingAudit() {
+    const userId = localStorage.getItem('user_id') || 1;
+    try {
+        const response = await fetchAPI(`/latest-audit?user_id=${userId}`, {
+            method: 'GET'
+        });
+        
+        if (response.success && response.data) {
+            const auditResults = document.getElementById('auditResults');
+            const urlInput = document.getElementById('websiteURL');
+            
+            // Set URL input
+            if (response.data.url) {
+                urlInput.value = response.data.url;
+            }
+            
+            // Show and render results
+            auditResults.classList.remove('d-none');
+            renderAuditResults(response.data);
+        }
+    } catch (error) {
+        console.error('Failed to load existing audit:', error);
+    }
+}
 
 async function runAudit() {
     const urlInput = document.getElementById('websiteURL');
@@ -58,9 +85,10 @@ async function runAudit() {
     }, 800);
 
     try {
+        const userId = localStorage.getItem('user_id') || 1;
         const response = await fetchAPI('/analyze', {
             method: 'POST',
-            body: JSON.stringify({ url: url })
+            body: JSON.stringify({ url: url, user_id: userId })
         });
         
         clearInterval(progressInterval);
@@ -196,40 +224,7 @@ function renderAuditResults(data) {
         `;
     }).join('');
 
-    // 3. Render Recommendations
-    const recsList = document.getElementById('recommendationsList');
-    recsList.innerHTML = '';
-    
-    if (data.recommendations && data.recommendations.length > 0) {
-        data.recommendations.forEach(rec => {
-            let icon = "bi-lightbulb";
-            let color = "primary";
-            
-            if(rec.toLowerCase().includes("add") || rec.toLowerCase().includes("missing")) {
-                icon = "bi-exclamation-circle";
-                color = "warning";
-            }
-            if(rec.toLowerCase().includes("error") || rec.toLowerCase().includes("critical")) {
-                icon = "bi-x-octagon";
-                color = "danger";
-            }
-            if(rec.toLowerCase().includes("great")) {
-                icon = "bi-check-all";
-                color = "success";
-            }
-
-            recsList.innerHTML += `
-                <div class="insight-item mb-3 p-3 rounded" style="background: var(--${color}-light); border: 1px solid rgba(var(--${color}-rgb), 0.2);">
-                    <div class="d-flex gap-3">
-                        <i class="bi ${icon} text-${color} fs-4 mt-1"></i>
-                        <div>
-                            <p class="mb-0 text-muted">${rec}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-    }
+    // AI recommendations are now separated into the AI Recommendations section.
 }
 
 function updateMeter(meterId, valId, score) {
