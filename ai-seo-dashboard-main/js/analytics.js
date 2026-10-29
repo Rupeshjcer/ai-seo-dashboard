@@ -14,14 +14,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadAnalytics() {
+    const userId = localStorage.getItem('user_id');
+    const url = (userId && userId !== 'null' && userId !== 'undefined')
+        ? `http://127.0.0.1:5000/analytics?user_id=${encodeURIComponent(userId)}`
+        : 'http://127.0.0.1:5000/analytics';
     try {
-        const response = await fetch('http://127.0.0.1:5000/analytics');
+        const response = await fetch(url);
         const result = await response.json();
         if (!response.ok || !result.success) throw new Error('Analytics could not be loaded');
-        analyticsHistory = result.data;
+        analyticsHistory = result.data || [];
         renderCharts(analyticsHistory);
     } catch (error) {
-        showNotification(error.message, 'danger');
+        renderCharts([]);
     }
 }
 
@@ -33,36 +37,41 @@ function renderCharts(history) {
         return;
     }
 
-    // Line Chart
+    // Line Chart — real audit history
     const labels = history.map(row => new Date(row.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
     const clicks = history.map(row => row.audits);
 
     ChartFactory.createTrendChart('trafficChart', labels, [
-        { label: 'Organic Clicks', data: clicks }
+        { label: 'Audits per Day', data: clicks }
     ]);
 
-    // Device Chart
-    const colors = getChartColors();
+    // Device Chart — no real device breakdown data available; show empty state
     const ctx = document.getElementById('deviceChart');
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Mobile', 'Desktop', 'Tablet'],
-            datasets: [{
-                data: [58, 35, 7],
-                backgroundColor: [colors.primary, colors.secondary, colors.accent],
-                borderWidth: 0,
-                hoverOffset: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'right' }
-            }
+    if (ctx) {
+        ctx.style.display = 'none';
+        const parent = ctx.parentElement;
+        if (!parent.querySelector('.no-device-data')) {
+            const msg = document.createElement('div');
+            msg.className = 'no-device-data text-center text-muted py-4 small';
+            msg.innerHTML = '<i class="bi bi-pie-chart fs-3 d-block mb-2"></i>Device breakdown data not available.';
+            parent.appendChild(msg);
         }
-    });
+    }
+
+    // Top Pages table — built from real audit history
+    const tbody = document.getElementById('topPagesBody');
+    if (tbody && history.length > 0) {
+        tbody.innerHTML = history.slice(0, 5).map(row => {
+            const url = row.url || row.date || 'Unknown';
+            const auditCount = row.audits || 1;
+            const avgSeo = Math.round(row.seo_score || 0);
+            return `<tr>
+                <td class="text-primary text-truncate" style="max-width: 150px;" title="${url}">${url}</td>
+                <td>${auditCount}</td>
+                <td>${avgSeo}</td>
+            </tr>`;
+        }).join('');
+    }
 }
 
 function updateData(days) {

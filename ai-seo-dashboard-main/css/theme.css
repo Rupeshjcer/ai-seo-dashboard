@@ -72,8 +72,8 @@
     --bg-navbar: rgba(15, 23, 42, 0.8);
     
     --text-primary: #F8FAFC;
-    --text-secondary: #94A3B8;
-    --text-muted: #64748B;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
     
     --border-color: rgba(255, 255, 255, 0.08);
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
@@ -92,6 +92,10 @@
     --glow-success: 0 0 15px rgba(34, 197, 94, 0.5);
     --glow-warning: 0 0 15px rgba(245, 158, 11, 0.5);
     --glow-danger: 0 0 15px rgba(239, 68, 68, 0.5);
+}
+
+[data-theme="dark"] .text-muted {
+    color: #94A3B8 !important;
 }
 
 /* ==========================================================================
@@ -579,6 +583,97 @@ a:hover {
     border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
+/* --- High-contrast readable Badges & Pills (Universal Visibility Fix) --- */
+.bg-opacity-20 {
+    --bs-bg-opacity: 0.2 !important;
+}
+
+.badge.bg-primary.bg-opacity-20,
+.badge.bg-primary-subtle {
+    background-color: rgba(59, 130, 246, 0.18) !important;
+    color: #60a5fa !important;
+    border: 1px solid rgba(59, 130, 246, 0.35) !important;
+}
+
+.badge.bg-success.bg-opacity-20,
+.badge.bg-success-subtle {
+    background-color: rgba(34, 197, 94, 0.18) !important;
+    color: #4ade80 !important;
+    border: 1px solid rgba(34, 197, 94, 0.35) !important;
+}
+
+.badge.bg-warning.bg-opacity-20,
+.badge.bg-warning-subtle {
+    background-color: rgba(245, 158, 11, 0.18) !important;
+    color: #fbbf24 !important;
+    border: 1px solid rgba(245, 158, 11, 0.35) !important;
+}
+
+.badge.bg-danger.bg-opacity-20,
+.badge.bg-danger-subtle {
+    background-color: rgba(239, 68, 68, 0.18) !important;
+    color: #f87171 !important;
+    border: 1px solid rgba(239, 68, 68, 0.35) !important;
+}
+
+.badge.bg-info.bg-opacity-20,
+.badge.bg-info-subtle {
+    background-color: rgba(6, 182, 212, 0.18) !important;
+    color: #22d3ee !important;
+    border: 1px solid rgba(6, 182, 212, 0.35) !important;
+}
+
+/* Light mode overrides for accessible contrast */
+[data-theme="light"] .badge.bg-primary.bg-opacity-20,
+[data-theme="light"] .badge.bg-primary-subtle,
+body.light-mode .badge.bg-primary.bg-opacity-20 {
+    background-color: rgba(59, 130, 246, 0.14) !important;
+    color: #1d4ed8 !important;
+    border: 1px solid rgba(59, 130, 246, 0.35) !important;
+}
+
+[data-theme="light"] .badge.bg-success.bg-opacity-20,
+[data-theme="light"] .badge.bg-success-subtle,
+body.light-mode .badge.bg-success.bg-opacity-20 {
+    background-color: rgba(34, 197, 94, 0.14) !important;
+    color: #15803d !important;
+    border: 1px solid rgba(34, 197, 94, 0.35) !important;
+}
+
+[data-theme="light"] .badge.bg-warning.bg-opacity-20,
+[data-theme="light"] .badge.bg-warning-subtle,
+body.light-mode .badge.bg-warning.bg-opacity-20 {
+    background-color: rgba(245, 158, 11, 0.14) !important;
+    color: #b45309 !important;
+    border: 1px solid rgba(245, 158, 11, 0.35) !important;
+}
+
+[data-theme="light"] .badge.bg-danger.bg-opacity-20,
+[data-theme="light"] .badge.bg-danger-subtle,
+body.light-mode .badge.bg-danger.bg-opacity-20 {
+    background-color: rgba(239, 68, 68, 0.14) !important;
+    color: #b91c1c !important;
+    border: 1px solid rgba(239, 68, 68, 0.35) !important;
+}
+
+[data-theme="light"] .badge.bg-info.bg-opacity-20,
+[data-theme="light"] .badge.bg-info-subtle,
+body.light-mode .badge.bg-info.bg-opacity-20 {
+    background-color: rgba(6, 182, 212, 0.14) !important;
+    color: #0e7490 !important;
+    border: 1px solid rgba(6, 182, 212, 0.35) !important;
+}
+
+/* Ensure solid badges always have high-contrast text color */
+.badge.bg-warning:not(.bg-opacity-20):not(.bg-warning-subtle) {
+    color: #111827 !important;
+}
+.badge.bg-primary:not(.bg-opacity-20):not(.bg-primary-subtle),
+.badge.bg-success:not(.bg-opacity-20):not(.bg-success-subtle),
+.badge.bg-danger:not(.bg-opacity-20):not(.bg-danger-subtle) {
+    color: #ffffff !important;
+}
+
 /* --- Score Meters (Circular) --- */
 .score-meter {
     position: relative;
@@ -594,8 +689,7 @@ a:hover {
 .score-meter::before {
     content: '';
     position: absolute;
-    width: 96px;
-    height: 96px;
+    inset: 10px;
     background: var(--card-bg);
     border-radius: 50%;
     box-shadow: var(--shadow-sm);
@@ -610,6 +704,14 @@ a:hover {
 .score-meter.good { background: conic-gradient(var(--info) calc(var(--score) * 1%), var(--glass-bg) 0); }
 .score-meter.average { background: conic-gradient(var(--warning) calc(var(--score) * 1%), var(--glass-bg) 0); }
 .score-meter.poor { background: conic-gradient(var(--danger) calc(var(--score) * 1%), var(--glass-bg) 0); }
+
+.card-stat-label {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    opacity: 0.9;
+}
 
 /* --- Stat Cards (Small) --- */
 .stat-card {
@@ -979,3 +1081,359 @@ a:hover {
         gap: 1rem;
     }
 }
+
+/* ==========================================================================
+   Latest Audit Metrics Breakdown - Redesigned Grid System
+   ========================================================================== */
+.metrics-breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 991.98px) {
+    .metrics-breakdown-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .metrics-breakdown-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Card Container */
+.metric-breakdown-card {
+    background: var(--card-bg, #FFFFFF);
+    border: 1px solid var(--border-color, rgba(15, 23, 42, 0.08));
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 200px;
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+[data-theme="dark"] .metric-breakdown-card {
+    background: var(--card-bg, rgba(30, 41, 59, 0.7));
+    border-color: var(--border-color, rgba(255, 255, 255, 0.08));
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.metric-breakdown-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+[data-theme="dark"] .metric-breakdown-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* Card Header */
+.mb-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.mb-card-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mb-card-icon {
+    font-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.mb-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+/* Universal Status Pill */
+.mb-status-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    height: 26px;
+    padding: 3px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+/* Pill Colors (accessible contrast for both light & dark mode) */
+.mb-pill-good {
+    background: rgba(34, 197, 94, 0.15) !important;
+    color: #15803D !important; /* Accessible deep green in light mode */
+    border: 1px solid rgba(34, 197, 94, 0.35) !important;
+}
+[data-theme="dark"] .mb-pill-good {
+    background: rgba(34, 197, 94, 0.22) !important;
+    color: #4ADE80 !important; /* High-contrast bright green in dark mode */
+    border-color: rgba(34, 197, 94, 0.45) !important;
+}
+
+.mb-pill-warning {
+    background: rgba(245, 158, 11, 0.15) !important;
+    color: #B45309 !important; /* Accessible deep amber in light mode */
+    border: 1px solid rgba(245, 158, 11, 0.35) !important;
+}
+[data-theme="dark"] .mb-pill-warning {
+    background: rgba(245, 158, 11, 0.22) !important;
+    color: #FBBF24 !important; /* Bright amber in dark mode */
+    border-color: rgba(245, 158, 11, 0.45) !important;
+}
+
+.mb-pill-danger {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #B91C1C !important; /* Accessible deep red in light mode */
+    border: 1px solid rgba(239, 68, 68, 0.35) !important;
+}
+[data-theme="dark"] .mb-pill-danger {
+    background: rgba(239, 68, 68, 0.22) !important;
+    color: #F87171 !important; /* Bright red in dark mode */
+    border-color: rgba(239, 68, 68, 0.45) !important;
+}
+
+.mb-pill-info {
+    background: rgba(59, 130, 246, 0.15) !important;
+    color: #1D4ED8 !important; /* Accessible deep blue in light mode */
+    border: 1px solid rgba(59, 130, 246, 0.35) !important;
+}
+[data-theme="dark"] .mb-pill-info {
+    background: rgba(59, 130, 246, 0.22) !important;
+    color: #60A5FA !important; /* Bright blue in dark mode */
+    border-color: rgba(59, 130, 246, 0.45) !important;
+}
+
+/* Card Body */
+.mb-card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+/* Two-line clamped text */
+.mb-text-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.mb-text-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* Stat Blocks Row (Headings & Links) */
+.mb-stat-blocks-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.mb-stat-block {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.mb-stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted, #94A3B8);
+}
+
+.mb-stat-number {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
+.mb-stat-number.mb-stat-warn {
+    color: #D97706 !important;
+}
+[data-theme="dark"] .mb-stat-number.mb-stat-warn {
+    color: #FBBF24 !important;
+}
+
+/* Main number group (Images & Alt) */
+.mb-images-main {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mb-main-number-group {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.mb-main-number {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.mb-main-number-label {
+    font-size: 13px;
+    color: var(--text-muted, #94A3B8);
+}
+
+/* Ratio Bar (Images Alt) */
+.mb-ratio-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(15, 23, 42, 0.08);
+    display: flex;
+    overflow: hidden;
+}
+[data-theme="dark"] .mb-ratio-bar {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.mb-ratio-segment {
+    height: 100%;
+    transition: width 0.4s ease;
+}
+
+.mb-ratio-good {
+    background: #22C55E;
+}
+
+.mb-ratio-warn {
+    background: #F59E0B;
+}
+
+/* Ratio Bar Legend */
+.mb-ratio-legend {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 12px;
+    color: var(--text-muted, #64748B);
+    margin-top: 2px;
+}
+
+.mb-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+/* Card Footer & Secondary text */
+.mb-card-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color, rgba(15, 23, 42, 0.06));
+}
+
+.mb-secondary-text {
+    font-size: 13px;
+    color: var(--text-secondary, #64748B);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Thin Optimal Range Progress Bar (Title & Meta) */
+.mb-optimal-bar-container {
+    position: relative;
+    width: 100%;
+    height: 6px;
+    background: rgba(15, 23, 42, 0.08);
+    border-radius: 3px;
+    overflow: hidden;
+}
+[data-theme="dark"] .mb-optimal-bar-container {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.mb-optimal-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: rgba(34, 197, 94, 0.25);
+    border-left: 1px dashed rgba(34, 197, 94, 0.6);
+    border-right: 1px dashed rgba(34, 197, 94, 0.6);
+}
+
+.mb-optimal-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.4s ease, background-color 0.3s ease;
+}
+
+/* Technical & Mobile Main Block */
+.mb-tech-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mb-mobile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #15803D;
+}
+[data-theme="dark"] .mb-mobile-badge {
+    color: #4ADE80;
+}
+
+/* Fix for .bg-opacity-20 missing in Bootstrap 5 (which causes 100% solid badge backgrounds matching text color) */
+.bg-opacity-20 {
+    --bs-bg-opacity: 0.2 !important;
+}
+
+

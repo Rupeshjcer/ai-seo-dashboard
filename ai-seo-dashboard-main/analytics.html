@@ -46,10 +46,6 @@
         <header class="top-navbar">
             <div class="d-flex align-items-center gap-3">
                 <i class="bi bi-list mobile-toggle" id="mobileSidebarToggle"></i>
-                <select class="form-select form-control w-auto border-0 bg-transparent fw-semibold">
-                    <option>example.com</option>
-                    <option>myportfolio.dev</option>
-                </select>
             </div>
             <div class="nav-actions">
                 <div class="theme-switch" id="themeToggle" title="Toggle Day/Night Mode" role="switch" aria-label="Toggle theme">
@@ -89,8 +85,8 @@
                         <div class="stat-icon primary"><i class="bi bi-mouse2"></i></div>
                         <div class="stat-details">
                             <h4>Total Clicks</h4>
-                            <div class="stat-value"><span class="counter-value" data-target="12.4">0</span>k</div>
-                            <div class="stat-change up"><i class="bi bi-arrow-up-short"></i> 8%</div>
+                            <div class="stat-value"><span class="counter-value" id="analyticsClicks" data-target="0">0</span></div>
+                            <div class="stat-change text-muted"><i class="bi bi-dash"></i> No data yet</div>
                         </div>
                     </div>
                 </div>
@@ -99,8 +95,8 @@
                         <div class="stat-icon info"><i class="bi bi-eye"></i></div>
                         <div class="stat-details">
                             <h4>Impressions</h4>
-                            <div class="stat-value"><span class="counter-value" data-target="184.2">0</span>k</div>
-                            <div class="stat-change up"><i class="bi bi-arrow-up-short"></i> 12%</div>
+                            <div class="stat-value"><span class="counter-value" id="analyticsImpressions" data-target="0">0</span></div>
+                            <div class="stat-change text-muted"><i class="bi bi-dash"></i> No data yet</div>
                         </div>
                     </div>
                 </div>
@@ -109,8 +105,8 @@
                         <div class="stat-icon warning"><i class="bi bi-percent"></i></div>
                         <div class="stat-details">
                             <h4>Average CTR</h4>
-                            <div class="stat-value"><span class="counter-value" data-target="6.7">0</span>%</div>
-                            <div class="stat-change down"><i class="bi bi-arrow-down-short"></i> 0.2%</div>
+                            <div class="stat-value"><span class="counter-value" id="analyticsCtr" data-target="0">0</span>%</div>
+                            <div class="stat-change text-muted"><i class="bi bi-dash"></i> No data yet</div>
                         </div>
                     </div>
                 </div>
@@ -119,8 +115,8 @@
                         <div class="stat-icon success"><i class="bi bi-trophy"></i></div>
                         <div class="stat-details">
                             <h4>Avg. Position</h4>
-                            <div class="stat-value"><span class="counter-value" data-target="12.4">0</span></div>
-                            <div class="stat-change up"><i class="bi bi-arrow-up-short"></i> 1.5</div>
+                            <div class="stat-value"><span class="counter-value" id="analyticsPosition" data-target="0">0</span></div>
+                            <div class="stat-change text-muted"><i class="bi bi-dash"></i> No data yet</div>
                         </div>
                     </div>
                 </div>
@@ -156,25 +152,15 @@
                                 <thead>
                                     <tr>
                                         <th>URL path</th>
-                                        <th>Clicks</th>
-                                        <th>CTR</th>
+                                        <th>Audits</th>
+                                        <th>Avg SEO</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="topPagesBody">
                                     <tr>
-                                        <td class="text-primary text-truncate" style="max-width: 150px;">/blog/what-is-ai-seo</td>
-                                        <td>4,250</td>
-                                        <td>8.4%</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-primary text-truncate" style="max-width: 150px;">/pricing</td>
-                                        <td>2,100</td>
-                                        <td>5.2%</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-primary text-truncate" style="max-width: 150px;">/features/keyword-research</td>
-                                        <td>1,840</td>
-                                        <td>6.1%</td>
+                                        <td colspan="3" class="text-center text-muted py-3 small">
+                                            No audit data available yet. Run a website audit to see results.
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

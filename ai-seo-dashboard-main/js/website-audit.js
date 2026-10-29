@@ -20,9 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadExistingAudit() {
-    const userId = localStorage.getItem('user_id') || 1;
+    const userId = localStorage.getItem('user_id');
+    if (!userId || userId === 'null' || userId === 'undefined') return;
     try {
-        const response = await fetchAPI(`/latest-audit?user_id=${userId}`, {
+        const response = await fetchAPI(`/latest-audit?user_id=${encodeURIComponent(userId)}`, {
             method: 'GET'
         });
         
@@ -84,12 +85,21 @@ async function runAudit() {
         if(progress > 60) statusText.innerText = "Checking site health...";
     }, 800);
 
-    try {
-        const userId = localStorage.getItem('user_id') || 1;
-        const response = await fetchAPI('/analyze', {
-            method: 'POST',
-            body: JSON.stringify({ url: url, user_id: userId })
-        });
+        const userId = localStorage.getItem('user_id');
+        if (!userId || userId === 'null' || userId === 'undefined') {
+            clearInterval(progressInterval);
+            scanProgress.classList.add('d-none');
+            analyzeBtn.disabled = false;
+            analyzeBtn.innerHTML = '<i class="bi bi-search"></i> Run Audit';
+            showNotification("Please sign in to run and save website audits to your dashboard.", "warning");
+            setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+            return;
+        }
+        try {
+            const response = await fetchAPI('/analyze', {
+                method: 'POST',
+                body: JSON.stringify({ url: url, user_id: userId })
+            });
         
         clearInterval(progressInterval);
         progressBar.style.width = '100%';
@@ -97,10 +107,11 @@ async function runAudit() {
 
         scanProgress.classList.add('d-none');
         if (response.success) {
+            localStorage.setItem('latest_audit_updated', Date.now().toString());
             auditResults.classList.remove('d-none');
             try {
                 renderAuditResults(response.data);
-                showNotification("Analysis complete!", "success");
+                showNotification("Analysis complete! Audit results saved to your dashboard.", "success");
             } catch (renderError) {
                 console.error('Audit results rendering failed:', renderError);
                 document.getElementById('detailedResultsGrid').innerHTML = '<div class="col-12"><div class="alert alert-warning">The audit completed, but some result details could not be displayed. Please refresh and try again.</div></div>';

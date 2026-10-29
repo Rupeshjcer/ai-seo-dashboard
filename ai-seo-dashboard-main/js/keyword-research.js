@@ -59,9 +59,9 @@ async function performSearch() {
         document.getElementById('resultsSection').classList.remove('d-none');
 
         if (backendData.data.source === 'dataforseo') {
-            showNotification("Keywords analyzed with real DataForSEO metrics!", "success");
+            showNotification("Keywords analyzed with DataForSEO metrics!", "success");
         } else {
-            showNotification("Live Google suggestions & keyword metrics loaded!", "success");
+            showNotification("Keywords analyzed with live search volume & CPC metrics!", "success");
         }
 
     } catch (error) {
@@ -84,6 +84,13 @@ function renderKeywordResults(keywords, summary) {
         T: ['Transactional', 'intent-trans']
     };
 
+    function formatNumber(num) {
+        if (num == null) return 'N/A';
+        if (num >= 10000) return Math.round(num / 1000) + 'K';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+        return num.toLocaleString();
+    }
+
     keywords.forEach(row => {
         const intent = intentMap[row.intent] || intentMap['I'];
 
@@ -100,8 +107,8 @@ function renderKeywordResults(keywords, summary) {
             const diffColor = row.difficulty > 60 ? 'bg-danger' : (row.difficulty > 30 ? 'bg-warning' : 'bg-success');
             difficultyCell = `
                 <div class="d-flex align-items-center gap-2">
-                    <span>${row.difficulty}</span>
-                    <div class="progress" style="width: 50px; height: 6px; background: rgba(255,255,255,0.1);">
+                    <span class="fw-medium">${row.difficulty}%</span>
+                    <div class="progress flex-grow-1" style="max-width: 60px; height: 6px; background: rgba(15, 23, 42, 0.1);">
                         <div class="progress-bar ${diffColor}" style="width: ${row.difficulty}%"></div>
                     </div>
                 </div>`;
@@ -111,12 +118,12 @@ function renderKeywordResults(keywords, summary) {
         if (row.competition_level != null) {
             const compText = row.competition_level.toUpperCase();
             const compColor = compText === 'HIGH' ? 'danger' : (compText === 'MEDIUM' ? 'warning' : 'success');
-            competitionCell = `<span class="badge bg-${compColor} bg-opacity-20 text-${compColor} border border-${compColor}">${compText}</span>`;
+            competitionCell = `<span class="badge bg-${compColor}-subtle text-${compColor} border border-${compColor}-subtle">${compText}</span>`;
         } else if (row.competition != null) {
             const compVal = row.competition;
             const compColor = compVal > 0.66 ? 'danger' : (compVal > 0.33 ? 'warning' : 'success');
             const text = compVal > 0.66 ? 'HIGH' : (compVal > 0.33 ? 'MEDIUM' : 'LOW');
-            competitionCell = `<span class="badge bg-${compColor} bg-opacity-20 text-${compColor} border border-${compColor}">${text}</span>`;
+            competitionCell = `<span class="badge bg-${compColor}-subtle text-${compColor} border border-${compColor}-subtle">${text}</span>`;
         }
 
         const tr = document.createElement('tr');
@@ -132,28 +139,22 @@ function renderKeywordResults(keywords, summary) {
     });
 
     if (summary) {
-        document.getElementById('volVal').innerText = summary.volume != null
-            ? (Math.round(summary.volume / 1000) + 'K') : 'N/A';
+        document.getElementById('volVal').innerText = formatNumber(summary.volume);
         document.getElementById('kdVal').innerText = summary.difficulty != null
             ? (summary.difficulty + '%') : 'N/A';
         document.getElementById('cpcVal').innerText = summary.cpc != null
             ? ('$' + summary.cpc.toFixed(2)) : 'N/A';
 
-        const globalVolEl = document.getElementById('globalVolVal');
-        if (globalVolEl) {
-            globalVolEl.innerText = 'N/A';
-        }
-
         const kdTextEl = document.getElementById('kdTextVal');
         if (kdTextEl && summary.difficulty != null) {
-            if (summary.difficulty > 70) { kdTextEl.innerText = 'Hard'; kdTextEl.className = 'small text-danger'; }
-            else if (summary.difficulty > 30) { kdTextEl.innerText = 'Medium'; kdTextEl.className = 'small text-warning'; }
-            else { kdTextEl.innerText = 'Easy'; kdTextEl.className = 'small text-success'; }
+            if (summary.difficulty > 70) { kdTextEl.innerText = 'Hard'; kdTextEl.className = 'small text-danger fw-semibold'; }
+            else if (summary.difficulty > 30) { kdTextEl.innerText = 'Medium'; kdTextEl.className = 'small text-warning fw-semibold'; }
+            else { kdTextEl.innerText = 'Easy'; kdTextEl.className = 'small text-success fw-semibold'; }
         } else if (kdTextEl) {
             kdTextEl.innerText = '-';
         }
     } else {
-        ['volVal', 'kdVal', 'cpcVal', 'globalVolVal'].forEach(id => {
+        ['volVal', 'kdVal', 'cpcVal'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.innerText = 'N/A';
         });

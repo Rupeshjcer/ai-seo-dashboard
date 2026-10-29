@@ -13,8 +13,8 @@
     <title>SEO Analysis | AI SEO Growth</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="css/theme.css">
-    <link rel="stylesheet" href="css/user-display.css">
+    <link rel="stylesheet" href="css/theme.css?v=2.2">
+    <link rel="stylesheet" href="css/user-display.css?v=2.2">
 </head>
 <body>
 <div class="app-container">
@@ -79,60 +79,93 @@
                     <h1 class="page-title">SEO Analysis Trends</h1>
                     <p class="page-subtitle">Historical comparison of your website's SEO performance over time.</p>
                 </div>
-                <select id="projectSelect" class="form-select form-control w-auto" style="min-width: 200px;">
-                    <option value="example.com">example.com</option>
-                    <option value="myportfolio.dev">myportfolio.dev</option>
-                    <option value="shop-store.io">shop-store.io</option>
-                </select>
             </div>
 
             <div class="row g-4 mb-4">
                 <div class="col-lg-3 col-md-6">
                     <div class="glass-card text-center fade-in-up delay-100">
-                        <h5 class="text-muted mb-3 fs-6">Avg SEO Score</h5>
-                        <div class="score-meter mx-auto mb-3" id="seoMeter" style="--score: 82; width: 100px; height: 100px;">
-                            <div class="score-value" style="font-size: 1.5rem;">82</div>
+                        <div class="card-stat-label mb-3">Avg SEO Score</div>
+                        <div class="score-meter mx-auto mb-3" id="seoMeter" style="--score: 0; width: 100px; height: 100px;">
+                            <div class="score-value" style="font-size: 1.5rem;">0</div>
                         </div>
-                        <div class="text-success small" id="seoTrend"><i class="bi bi-arrow-up"></i> +5 points</div>
+                        <div class="small" id="seoTrend"><i class="bi bi-dash"></i> No data yet</div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="glass-card text-center fade-in-up delay-200">
-                        <h5 class="text-muted mb-3 fs-6">Avg Health</h5>
-                        <div class="score-meter good mx-auto mb-3" id="healthMeter" style="--score: 91; width: 100px; height: 100px;">
-                            <div class="score-value" style="font-size: 1.5rem;">91</div>
+                        <div class="card-stat-label mb-3">Avg Health</div>
+                        <div class="score-meter mx-auto mb-3" id="healthMeter" style="--score: 0; width: 100px; height: 100px;">
+                            <div class="score-value" style="font-size: 1.5rem;">0</div>
                         </div>
-                        <div class="text-success small" id="healthTrend"><i class="bi bi-arrow-up"></i> +2 points</div>
+                        <div class="small" id="healthTrend"><i class="bi bi-dash"></i> No data yet</div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="glass-card text-center fade-in-up delay-300">
-                        <h5 class="text-muted mb-3 fs-6">Avg Performance</h5>
-                        <div class="score-meter mx-auto mb-3" style="--score: 75; width: 100px; height: 100px;">
-                            <div class="score-value" style="font-size: 1.5rem;">75</div>
+                        <div class="card-stat-label mb-3">Avg Content Score</div>
+                        <div class="score-meter mx-auto mb-3" id="contentMeter" style="--score: 0; width: 100px; height: 100px;">
+                            <div class="score-value" style="font-size: 1.5rem;">0</div>
                         </div>
-                        <div class="text-warning small"><i class="bi bi-dash"></i> No change</div>
+                        <div class="small" id="contentTrend"><i class="bi bi-dash"></i> No data yet</div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="glass-card text-center fade-in-up delay-400">
-                        <h5 class="text-muted mb-3 fs-6">Best Practices</h5>
-                        <div class="score-meter average mx-auto mb-3" style="--score: 64; width: 100px; height: 100px;">
-                            <div class="score-value" style="font-size: 1.5rem;">64</div>
+                        <div class="card-stat-label mb-3">Total Audits</div>
+                        <div class="score-meter mx-auto mb-3" id="totalAuditsMeter" style="--score: 0; width: 100px; height: 100px;">
+                            <div class="score-value" style="font-size: 1.5rem;" id="totalAuditsVal">0</div>
                         </div>
-                        <div class="text-danger small"><i class="bi bi-arrow-down"></i> -4 points</div>
+                        <div class="small text-muted" id="totalAuditsSub"><i class="bi bi-database"></i> Saved records</div>
                     </div>
                 </div>
             </div>
 
+            <!-- Historical Score Comparison Chart -->
+            <div class="glass-card mb-4 fade-in-up">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0 fs-5 fw-semibold"><i class="bi bi-graph-up text-primary me-2"></i>Historical Score Comparison</h4>
+                    <span class="badge bg-primary-subtle text-primary" id="historyBadge">Audit Trend Over Time</span>
+                </div>
+                <div class="chart-container" style="position: relative; height:320px; width: 100%;">
+                    <canvas id="historicalChart"></canvas>
+                </div>
+            </div>
 
-
-
-            <!-- Metrics Breakdown -->
-            <div class="glass-card fade-in-up">
-                <h4 class="mb-4 fs-5 fw-semibold">Metrics Breakdown</h4>
-                <div class="chart-container" style="position: relative; height:300px; width: 100%;">
-                    <canvas id="breakdownChart"></canvas>
+            <!-- Metrics Breakdown Chart & Recent Audits List -->
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="glass-card fade-in-up h-100">
+                        <h4 class="mb-4 fs-5 fw-semibold"><i class="bi bi-bar-chart-fill text-info me-2"></i>Latest Audit Metrics</h4>
+                        <div class="chart-container" style="position: relative; height:280px; width: 100%;">
+                            <canvas id="breakdownChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="glass-card fade-in-up h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="mb-0 fs-5 fw-semibold"><i class="bi bi-clock-history text-secondary me-2"></i>Audit History Records</h4>
+                            <a href="website-audit.html" class="btn btn-sm btn-outline-primary"><i class="bi bi-search me-1"></i>New Audit</a>
+                        </div>
+                        <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="font-size: 0.8rem;">Website</th>
+                                        <th scope="col" class="text-center" style="font-size: 0.8rem;">SEO</th>
+                                        <th scope="col" class="text-center" style="font-size: 0.8rem;">Health</th>
+                                        <th scope="col" class="text-center" style="font-size: 0.8rem;">Content</th>
+                                        <th scope="col" class="text-end" style="font-size: 0.8rem;">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="auditHistoryTableBody">
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-3">Loading audit records...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -142,9 +175,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="js/theme.js"></script>
-<script src="js/charts-config.js"></script>
-<script src="js/seo-analysis.js"></script>
-<script src="js/user-display.js"></script>
+<script src="js/theme.js?v=2.2"></script>
+<script src="js/charts-config.js?v=2.2"></script>
+<script src="js/seo-analysis.js?v=2.2"></script>
+<script src="js/user-display.js?v=2.2"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function updatePills(name) {
         if (!name) return;
-        const namePills = document.querySelectorAll('.user-name-text, #userNamePill, #userNameDisplay');
+        const namePills = document.querySelectorAll('.user-name-text, #userNamePill, #userNameDisplay, #userNameGreeting');
         namePills.forEach(el => {
             el.textContent = name;
         });

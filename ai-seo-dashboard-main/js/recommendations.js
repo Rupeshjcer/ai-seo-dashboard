@@ -42,18 +42,31 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadRecommendations(button) {
     if (button) button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Loading...';
     try {
-        const userId = localStorage.getItem('user_id') || 1;
-        const response = await fetch(`http://127.0.0.1:5000/recommendations?user_id=${userId}`);
+        const userId = localStorage.getItem('user_id');
+        if (!userId || userId === 'null' || userId === 'undefined') {
+            recommendations = [];
+            updatePriorityCounts();
+            renderRecs('all');
+            return;
+        }
+        const response = await fetch(`http://127.0.0.1:5000/recommendations?user_id=${encodeURIComponent(userId)}`);
         const result = await response.json();
-        if (!response.ok || !result.success) throw new Error(result.message || 'Could not load recommendations');
-        recommendations = result.data;
+        if (!response.ok || !result.success) {
+            recommendations = [];
+            updatePriorityCounts();
+            renderRecs('all');
+            return;
+        }
+        recommendations = result.data || [];
         const hidden = JSON.parse(localStorage.getItem('seoRecommendationStates') || '{}');
         recommendations = recommendations.filter(rec => !hidden[recommendationKey(rec)]);
         updatePriorityCounts();
         renderRecs('all');
         if (button) showNotification("Recommendations updated from your latest audit.", "success");
     } catch (error) {
-        showNotification(error.message, "danger");
+        recommendations = [];
+        updatePriorityCounts();
+        renderRecs('all');
     } finally {
         if (button) {
             button.innerHTML = '<i class="bi bi-magic me-1"></i> Generate New';

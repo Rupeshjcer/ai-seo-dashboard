@@ -17,10 +17,777 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
-    <!-- Custom Theme & CSS -->
-    <link rel="stylesheet" href="css/theme.css">
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/user-display.css">
+    <!-- Custom Theme & CSS (versioned for cache busting) -->
+    <link rel="stylesheet" href="css/theme.css?v=2.4">
+    <link rel="stylesheet" href="css/dashboard.css?v=3.1">
+    <link rel="stylesheet" href="css/user-display.css?v=2.4">
+
+    <!-- Direct inline styles for Latest Audit Metrics Breakdown ensuring zero-lag and bypassing browser cache -->
+    <style>
+    .metrics-breakdown-grid {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 20px !important;
+        margin-bottom: 1.5rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    @media (max-width: 991.98px) {
+        .metrics-breakdown-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+    @media (max-width: 640px) {
+        .metrics-breakdown-grid {
+            grid-template-columns: 1fr !important;
+        }
+    }
+    .metric-breakdown-card {
+        background: #FFFFFF !important;
+        border: 1px solid rgba(15, 23, 42, 0.08) !important;
+        border-radius: 16px !important;
+        padding: 22px !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        min-height: 200px !important;
+        height: 100% !important;
+        box-sizing: border-box !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+    }
+    .metric-breakdown-card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+        transform: translateY(-2px) !important;
+    }
+    [data-theme="dark"] .metric-breakdown-card,
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .metric-breakdown-card {
+            background: #1E293B !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+        }
+        :root:not([data-theme="light"]) .metric-breakdown-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45) !important;
+        }
+    }
+    .mb-card-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-bottom: 14px !important;
+    }
+    .mb-card-title-group {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+    .mb-card-icon {
+        font-size: 20px !important;
+        width: 20px !important;
+        height: 20px !important;
+        line-height: 1 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+    }
+    .mb-card-title {
+        font-size: 15px !important;
+        font-weight: 600 !important;
+        color: var(--text-primary, #0F172A) !important;
+        line-height: 1.2 !important;
+    }
+    [data-theme="dark"] .mb-card-title,
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mb-card-title {
+            color: #F8FAFC !important;
+        }
+    }
+    .mb-status-pill {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 96px !important;
+        height: 26px !important;
+        padding: 3px 12px !important;
+        border-radius: 9999px !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+        letter-spacing: 0.02em !important;
+        flex-shrink: 0 !important;
+        box-sizing: border-box !important;
+    }
+    .mb-pill-good {
+        background: rgba(34, 197, 94, 0.15) !important;
+        color: #15803D !important;
+        border: 1px solid rgba(34, 197, 94, 0.35) !important;
+    }
+    [data-theme="dark"] .mb-pill-good,
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mb-pill-good {
+            background: rgba(34, 197, 94, 0.22) !important;
+            color: #4ADE80 !important;
+            border-color: rgba(34, 197, 94, 0.45) !important;
+        }
+    }
+    .mb-pill-warning {
+        background: rgba(245, 158, 11, 0.15) !important;
+        color: #B45309 !important;
+        border: 1px solid rgba(245, 158, 11, 0.35) !important;
+    }
+    [data-theme="dark"] .mb-pill-warning,
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mb-pill-warning {
+            background: rgba(245, 158, 11, 0.22) !important;
+            color: #FBBF24 !important;
+            border-color: rgba(245, 158, 11, 0.45) !important;
+        }
+    }
+    .mb-pill-danger {
+        background: rgba(239, 68, 68, 0.15) !important;
+        color: #B91C1C !important;
+        border: 1px solid rgba(239, 68, 68, 0.35) !important;
+    }
+    [data-theme="dark"] .mb-pill-danger,
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mb-pill-danger {
+            background: rgba(239, 68, 68, 0.22) !important;
+            color: #F87171 !important;
+            border-color: rgba(239, 68, 68, 0.45) !important;
+        }
+    }
+    .mb-pill-info {
+        background: rgba(59, 130, 246, 0.15) !important;
+        color: #1D4ED8 !important;
+        border: 1px solid rgba(59, 130, 246, 0.35) !important;
+    }
+    [data-theme="dark"] .mb-pill-info,
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mb-pill-info {
+            background: rgba(59, 130, 246, 0.22) !important;
+            color: #60A5FA !important;
+            border-color: rgba(59, 130, 246, 0.45) !important;
+        }
+    }
+    .mb-card-body {
+        flex-grow: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        margin-bottom: 12px !important;
+    }
+    .mb-text-clamp-2 {
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        font-size: 15px !important;
+        font-weight: 600 !important;
+        color: var(--text-primary, #0F172A) !important;
+        line-height: 1.4 !important;
+        word-break: break-word !important;
+    }
+    .mb-text-clamp-3 {
+        display: -webkit-box !important;
+        -webkit-line-clamp: 3 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        color: var(--text-primary, #0F172A) !important;
+        line-height: 1.4 !important;
+        word-break: break-word !important;
+    }
+    [data-theme="dark"] .mb-text-clamp-2,
+    [data-theme="dark"] .mb-text-clamp-3,
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mb-text-clamp-2,
+        :root:not([data-theme="light"]) .mb-text-clamp-3 {
+            color: #F1F5F9 !important;
+        }
+    }
+    .mb-stat-blocks-row {
+        display: flex !important;
+        align-items: center !important;
+        gap: 20px !important;
+    }
+    .mb-stat-block {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 2px !important;
+    }
+    .mb-stat-label {
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.05em !important;
+        text-transform: uppercase !important;
+        color: var(--text-muted, #64748B) !important;
+    }
+    .mb-stat-number {
+        font-size: 22px !important;
+        font-weight: 700 !important;
+        color: var(--text-primary, #0F172A) !important;
+        line-height: 1.1 !important;
+    }
+    [data-theme="dark"] .mb-stat-number,
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mb-stat-number {
+            color: #F8FAFC !important;
+        }
+    }
+    .mb-stat-number.mb-stat-warn {
+        color: #D97706 !important;
+    }
+    [data-theme="dark"] .mb-stat-number.mb-stat-warn,
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mb-stat-number.mb-stat-warn {
+            color: #FBBF24 !important;
+        }
+    }
+    .mb-images-main {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+    .mb-main-number-group {
+        display: flex !important;
+        align-items: baseline !important;
+        gap: 6px !important;
+    }
+    .mb-main-number {
+        font-size: 22px !important;
+        font-weight: 700 !important;
+        color: var(--text-primary, #0F172A) !important;
+        line-height: 1 !important;
+    }
+    [data-theme="dark"] .mb-main-number,
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mb-main-number {
+            color: #F8FAFC !important;
+        }
+    }
+    .mb-main-number-label {
+        font-size: 13px !important;
+        color: var(--text-muted, #64748B) !important;
+    }
+    .mb-ratio-bar {
+        width: 100% !important;
+        height: 8px !important;
+        border-radius: 4px !important;
+        background: rgba(15, 23, 42, 0.08) !important;
+        display: flex !important;
+        overflow: hidden !important;
+    }
+    [data-theme="dark"] .mb-ratio-bar,
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mb-ratio-bar {
+            background: rgba(255, 255, 255, 0.08) !important;
+        }
+    }
+    .mb-ratio-segment {
+        height: 100% !important;
+        transition: width 0.4s ease !important;
+    }
+    .mb-ratio-good {
+        background: #22C55E !important;
+    }
+    .mb-ratio-warn {
+        background: #F59E0B !important;
+    }
+    .mb-ratio-legend {
+        display: flex !important;
+        align-items: center !important;
+        gap: 14px !important;
+        font-size: 12px !important;
+        color: var(--text-muted, #64748B) !important;
+        margin-top: 2px !important;
+    }
+    .mb-legend-dot {
+        width: 8px !important;
+        height: 8px !important;
+        border-radius: 50% !important;
+        display: inline-block !important;
+        flex-shrink: 0 !important;
+    }
+    .mb-card-footer {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 6px !important;
+        padding-top: 10px !important;
+        border-top: 1px solid rgba(15, 23, 42, 0.06) !important;
+    }
+    [data-theme="dark"] .mb-card-footer,
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mb-card-footer {
+            border-top-color: rgba(255, 255, 255, 0.06) !important;
+        }
+    }
+    .mb-secondary-text {
+        font-size: 13px !important;
+        color: var(--text-muted, #64748B) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+    .mb-optimal-bar-container {
+        position: relative !important;
+        width: 100% !important;
+        height: 6px !important;
+        background: rgba(15, 23, 42, 0.08) !important;
+        border-radius: 3px !important;
+        overflow: hidden !important;
+    }
+    [data-theme="dark"] .mb-optimal-bar-container,
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mb-optimal-bar-container {
+            background: rgba(255, 255, 255, 0.08) !important;
+        }
+    }
+    .mb-optimal-zone {
+        position: absolute !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        background: rgba(34, 197, 94, 0.25) !important;
+        border-left: 1px dashed rgba(34, 197, 94, 0.6) !important;
+        border-right: 1px dashed rgba(34, 197, 94, 0.6) !important;
+    }
+    .mb-optimal-fill {
+        height: 100% !important;
+        border-radius: 3px !important;
+        transition: width 0.4s ease, background-color 0.3s ease !important;
+    }
+    .mb-tech-main {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+    .mb-mobile-badge {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        color: #15803D !important;
+    }
+    [data-theme="dark"] .mb-mobile-badge {
+        color: #4ADE80 !important;
+    }
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mb-mobile-badge {
+            color: #4ADE80 !important;
+        }
+    }
+    /* Universal Badge Text Visibility Fix */
+    .bg-opacity-20 {
+        --bs-bg-opacity: 0.2 !important;
+    }
+    .badge.bg-primary.bg-opacity-20,
+    .badge.bg-primary-subtle {
+        background-color: rgba(59, 130, 246, 0.18) !important;
+        color: #60a5fa !important;
+        border: 1px solid rgba(59, 130, 246, 0.35) !important;
+    }
+    .badge.bg-success.bg-opacity-20,
+    .badge.bg-success-subtle {
+        background-color: rgba(34, 197, 94, 0.18) !important;
+        color: #4ade80 !important;
+        border: 1px solid rgba(34, 197, 94, 0.35) !important;
+    }
+    .badge.bg-warning.bg-opacity-20,
+    .badge.bg-warning-subtle {
+        background-color: rgba(245, 158, 11, 0.18) !important;
+        color: #fbbf24 !important;
+        border: 1px solid rgba(245, 158, 11, 0.35) !important;
+    }
+    .badge.bg-danger.bg-opacity-20,
+    .badge.bg-danger-subtle {
+        background-color: rgba(239, 68, 68, 0.18) !important;
+        color: #f87171 !important;
+        border: 1px solid rgba(239, 68, 68, 0.35) !important;
+    }
+    [data-theme="light"] .badge.bg-primary.bg-opacity-20,
+    [data-theme="light"] .badge.bg-primary-subtle {
+        background-color: rgba(59, 130, 246, 0.14) !important;
+        color: #1d4ed8 !important;
+        border: 1px solid rgba(59, 130, 246, 0.35) !important;
+    }
+    [data-theme="light"] .badge.bg-success.bg-opacity-20,
+    [data-theme="light"] .badge.bg-success-subtle {
+        background-color: rgba(34, 197, 94, 0.14) !important;
+        color: #15803d !important;
+        border: 1px solid rgba(34, 197, 94, 0.35) !important;
+    }
+    [data-theme="light"] .badge.bg-warning.bg-opacity-20,
+    [data-theme="light"] .badge.bg-warning-subtle {
+        background-color: rgba(245, 158, 11, 0.14) !important;
+        color: #b45309 !important;
+        border: 1px solid rgba(245, 158, 11, 0.35) !important;
+    }
+    [data-theme="light"] .badge.bg-danger.bg-opacity-20,
+    [data-theme="light"] .badge.bg-danger-subtle {
+        background-color: rgba(239, 68, 68, 0.14) !important;
+        color: #b91c1c !important;
+        border: 1px solid rgba(239, 68, 68, 0.35) !important;
+    }
+    .badge.bg-warning:not(.bg-opacity-20):not(.bg-warning-subtle) {
+        color: #111827 !important;
+    }
+    .badge.bg-primary:not(.bg-opacity-20):not(.bg-primary-subtle),
+    .badge.bg-success:not(.bg-opacity-20):not(.bg-success-subtle),
+    .badge.bg-danger:not(.bg-opacity-20):not(.bg-danger-subtle) {
+        color: #ffffff !important;
+    }
+    /* ==========================================================================
+       Detected Issues & Checks - Inlined Design System
+       ========================================================================== */
+    :root {
+        --issue-critical-bg: #FDECEE;
+        --issue-critical-border: #DC3545;
+        --issue-critical-title: #7A1620;
+        --issue-critical-desc: #4A1B21;
+        --issue-critical-badge-bg: #DC3545;
+        --issue-critical-badge-text: #FFFFFF;
+        --issue-critical-icon: #DC3545;
+
+        --issue-warning-bg: #FFF6E5;
+        --issue-warning-border: #F59E0B;
+        --issue-warning-title: #7A4A00;
+        --issue-warning-desc: #5C4310;
+        --issue-warning-badge-bg: #F59E0B;
+        --issue-warning-badge-text: #2D1A00;
+        --issue-warning-icon: #D97706;
+
+        --issue-passed-bg: #EAF7EF;
+        --issue-passed-border: #198754;
+        --issue-passed-title: #0F5132;
+        --issue-passed-desc: #1F4D38;
+        --issue-passed-badge-bg: #198754;
+        --issue-passed-badge-text: #FFFFFF;
+        --issue-passed-icon: #198754;
+
+        --issue-group-critical-heading: #DC3545;
+        --issue-group-warning-heading: #B45309;
+        --issue-group-passed-heading: #198754;
+    }
+
+    [data-theme="dark"] {
+        --issue-critical-bg: #2A1215;
+        --issue-critical-border: #EF4444;
+        --issue-critical-title: #FECACA;
+        --issue-critical-desc: #FCA5A5;
+        --issue-critical-badge-bg: #DC3545;
+        --issue-critical-badge-text: #FFFFFF;
+        --issue-critical-icon: #F87171;
+
+        --issue-warning-bg: #2D2006;
+        --issue-warning-border: #F59E0B;
+        --issue-warning-title: #FEF3C7;
+        --issue-warning-desc: #FDE68A;
+        --issue-warning-badge-bg: #F59E0B;
+        --issue-warning-badge-text: #2A1802;
+        --issue-warning-icon: #FBBF24;
+
+        --issue-passed-bg: #0C2417;
+        --issue-passed-border: #10B981;
+        --issue-passed-title: #D1FAE5;
+        --issue-passed-desc: #A7F3D0;
+        --issue-passed-badge-bg: #198754;
+        --issue-passed-badge-text: #FFFFFF;
+        --issue-passed-icon: #34D399;
+
+        --issue-group-critical-heading: #F87171;
+        --issue-group-warning-heading: #FBBF24;
+        --issue-group-passed-heading: #34D399;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+            --issue-critical-bg: #2A1215;
+            --issue-critical-border: #EF4444;
+            --issue-critical-title: #FECACA;
+            --issue-critical-desc: #FCA5A5;
+            --issue-critical-badge-bg: #DC3545;
+            --issue-critical-badge-text: #FFFFFF;
+            --issue-critical-icon: #F87171;
+
+            --issue-warning-bg: #2D2006;
+            --issue-warning-border: #F59E0B;
+            --issue-warning-title: #FEF3C7;
+            --issue-warning-desc: #FDE68A;
+            --issue-warning-badge-bg: #F59E0B;
+            --issue-warning-badge-text: #2A1802;
+            --issue-warning-icon: #FBBF24;
+
+            --issue-passed-bg: #0C2417;
+            --issue-passed-border: #10B981;
+            --issue-passed-title: #D1FAE5;
+            --issue-passed-desc: #A7F3D0;
+            --issue-passed-badge-bg: #198754;
+            --issue-passed-badge-text: #FFFFFF;
+            --issue-passed-icon: #34D399;
+
+            --issue-group-critical-heading: #F87171;
+            --issue-group-warning-heading: #FBBF24;
+            --issue-group-passed-heading: #34D399;
+        }
+    }
+
+    .issue-filter-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+    }
+    .issue-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 6px 14px;
+        min-width: 105px;
+        border-radius: 9999px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        background: transparent;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
+        user-select: none;
+        line-height: 1.2;
+    }
+    .issue-pill:focus-visible {
+        outline: 2px solid var(--primary, #4F46E5);
+        outline-offset: 2px;
+    }
+    .issue-pill-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        transition: transform 0.2s ease;
+    }
+    .issue-pill-critical {
+        background: var(--issue-critical-bg);
+        border-color: var(--issue-critical-border);
+        color: var(--issue-critical-title);
+    }
+    .issue-pill-critical .issue-pill-dot { background: var(--issue-critical-border); }
+    .issue-pill-critical:hover { filter: brightness(0.95); transform: translateY(-1px); }
+    .issue-pill-critical.active {
+        background: #DC3545 !important;
+        border-color: #DC3545 !important;
+        color: #FFFFFF !important;
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
+    }
+    .issue-pill-critical.active .issue-pill-dot { background: #FFFFFF !important; }
+
+    .issue-pill-warning {
+        background: var(--issue-warning-bg);
+        border-color: var(--issue-warning-border);
+        color: var(--issue-warning-title);
+    }
+    .issue-pill-warning .issue-pill-dot { background: var(--issue-warning-border); }
+    .issue-pill-warning:hover { filter: brightness(0.95); transform: translateY(-1px); }
+    .issue-pill-warning.active {
+        background: #F59E0B !important;
+        border-color: #D97706 !important;
+        color: #2D1A00 !important;
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+    }
+    .issue-pill-warning.active .issue-pill-dot { background: #2D1A00 !important; }
+
+    .issue-pill-passed {
+        background: var(--issue-passed-bg);
+        border-color: var(--issue-passed-border);
+        color: var(--issue-passed-title);
+    }
+    .issue-pill-passed .issue-pill-dot { background: var(--issue-passed-border); }
+    .issue-pill-passed:hover { filter: brightness(0.95); transform: translateY(-1px); }
+    .issue-pill-passed.active {
+        background: #198754 !important;
+        border-color: #198754 !important;
+        color: #FFFFFF !important;
+        box-shadow: 0 2px 8px rgba(25, 135, 84, 0.4);
+    }
+    .issue-pill-passed.active .issue-pill-dot { background: #FFFFFF !important; }
+
+    .issue-group { margin-bottom: 1.5rem; }
+    .issue-group:last-child { margin-bottom: 0; }
+    .issue-group.d-none { display: none !important; }
+
+    .issue-group-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+    }
+    .critical-group-header { color: var(--issue-group-critical-heading); }
+    .warning-group-header { color: var(--issue-group-warning-heading); }
+    .passed-group-header { color: var(--issue-group-passed-heading); }
+
+    .issue-group-items {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .issue-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 15px 16px;
+        border-radius: 12px;
+        border-left-width: 4px;
+        border-left-style: solid;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        box-sizing: border-box;
+    }
+    .issue-row:hover {
+        transform: translateX(3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    .issue-row-critical {
+        background: var(--issue-critical-bg);
+        border-left-color: var(--issue-critical-border);
+    }
+    .issue-row-warning {
+        background: var(--issue-warning-bg);
+        border-left-color: var(--issue-warning-border);
+    }
+    .issue-row-passed {
+        background: var(--issue-passed-bg);
+        border-left-color: var(--issue-passed-border);
+    }
+    .issue-icon-wrap {
+        font-size: 20px;
+        line-height: 1;
+        margin-top: 1px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .issue-row-critical .issue-icon-wrap { color: var(--issue-critical-icon); }
+    .issue-row-warning .issue-icon-wrap { color: var(--issue-warning-icon); }
+    .issue-row-passed .issue-icon-wrap { color: var(--issue-passed-icon); }
+
+    .issue-content-wrap {
+        flex: 1 1 auto;
+        min-width: 0;
+        text-align: left;
+    }
+    .issue-title {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.35;
+        margin-bottom: 4px;
+    }
+    .issue-row-critical .issue-title { color: var(--issue-critical-title); }
+    .issue-row-warning .issue-title { color: var(--issue-warning-title); }
+    .issue-row-passed .issue-title { color: var(--issue-passed-title); }
+
+    .issue-desc {
+        font-size: 13.5px;
+        font-weight: 400;
+        line-height: 1.5;
+        max-width: 70ch;
+        margin: 0;
+    }
+    .issue-row-critical .issue-desc { color: var(--issue-critical-desc); }
+    .issue-row-warning .issue-desc { color: var(--issue-warning-desc); }
+    .issue-row-passed .issue-desc { color: var(--issue-passed-desc); }
+
+    .issue-fix {
+        font-size: 12.5px;
+        font-weight: 500;
+        line-height: 1.45;
+        margin-top: 6px;
+        opacity: 0.85;
+    }
+    .issue-row-critical .issue-fix { color: var(--issue-critical-desc); }
+    .issue-row-warning .issue-fix { color: var(--issue-warning-desc); }
+
+    .issue-badge-wrap {
+        flex-shrink: 0;
+        margin-left: auto;
+        margin-top: 1px;
+    }
+    .issue-severity-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        line-height: 1.2;
+    }
+    .issue-badge-critical {
+        background: var(--issue-critical-badge-bg);
+        color: var(--issue-critical-badge-text);
+    }
+    .issue-badge-warning {
+        background: var(--issue-warning-badge-bg);
+        color: var(--issue-warning-badge-text);
+    }
+    .issue-badge-passed {
+        background: var(--issue-passed-badge-bg);
+        color: var(--issue-passed-badge-text);
+    }
+
+    .passed-toggle-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--issue-group-passed-heading);
+        background: var(--issue-passed-bg);
+        border: 1px solid var(--issue-passed-border);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-top: 4px;
+    }
+    .passed-toggle-btn:hover {
+        filter: brightness(0.96);
+        transform: translateY(-1px);
+    }
+    .passed-toggle-btn:focus-visible {
+        outline: 2px solid var(--issue-passed-border);
+        outline-offset: 2px;
+    }
+
+    .passed-collapsible-wrapper {
+        overflow: hidden;
+        transition: max-height 0.3s ease, opacity 0.3s ease;
+    }
+    .passed-collapsible-wrapper.collapsed {
+        max-height: 0;
+        opacity: 0;
+        pointer-events: none;
+        margin-top: 0;
+    }
+    .passed-collapsible-wrapper.expanded {
+        max-height: 1200px;
+        opacity: 1;
+        margin-top: 12px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .passed-collapsible-wrapper, .issue-row, .issue-pill {
+            transition: none !important;
+        }
+    }
+    </style>
 </head>
 <body>
 
@@ -113,8 +880,52 @@
                 </div>
                 <div>
                     <a href="website-audit.html" class="btn btn-primary btn-premium">
-                        <i class="bi bi-plus-circle"></i> New Audit
+                        <i class="bi bi-search me-1"></i> Full Audit Page
                     </a>
+                </div>
+            </div>
+
+            <!-- Error Banner (Hidden by default) -->
+            <div id="dashboardErrorBanner" class="alert alert-danger d-none align-items-center justify-content-between p-3 mb-4 rounded-3 glass-card" role="alert">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-exclamation-triangle-fill fs-5 text-danger"></i>
+                    <span id="dashboardErrorMessage">Unable to load dashboard data.</span>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger" id="dashboardRetryBtn">
+                    <i class="bi bi-arrow-clockwise me-1"></i> Retry
+                </button>
+            </div>
+
+            <!-- Quick Audit Bar directly on Dashboard -->
+            <div class="glass-card mb-4 fade-in-up" id="dashboardQuickAuditCard">
+                <form id="dashboardAuditForm">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-md-9 col-lg-10">
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent border-end-0 text-muted">
+                                    <i class="bi bi-globe2 text-primary"></i>
+                                </span>
+                                <input type="text" id="dashboardAuditUrl" class="form-control border-start-0 ps-0" placeholder="Analyze a new URL (e.g. https://example.com)" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg-2">
+                            <button type="submit" class="btn btn-primary w-100 btn-premium py-2" id="dashboardAuditBtn">
+                                <i class="bi bi-lightning-charge me-1"></i> Run Audit
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <!-- Inline Progress Bar (shown during audit) -->
+                <div id="dashboardAuditProgress" class="d-none mt-3 pt-2 border-top border-secondary border-opacity-25">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="small text-muted" id="dashboardAuditStatusText">
+                            <span class="spinner-border spinner-border-sm me-2 text-primary"></span>Crawling website and calculating SEO metrics...
+                        </span>
+                        <span class="small text-primary fw-medium" id="dashboardAuditPercent">40%</span>
+                    </div>
+                    <div class="progress" style="height: 6px; background: rgba(255,255,255,0.08);">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" id="dashboardAuditProgressBar" style="width: 40%"></div>
+                    </div>
                 </div>
             </div>
 
@@ -127,7 +938,7 @@
                         </div>
                         <div class="stat-details">
                             <h4>Avg SEO Score</h4>
-                            <div class="stat-value"><span id="averageSeo" class="counter-value" data-target="0">0</span></div>
+                            <div class="stat-value"><span id="averageSeo">—</span></div>
                             <div class="stat-change"><i class="bi bi-speedometer2"></i> Across saved audits</div>
                         </div>
                     </div>
@@ -139,7 +950,7 @@
                         </div>
                         <div class="stat-details">
                             <h4>Audits Run</h4>
-                            <div class="stat-value"><span id="auditCount" class="counter-value" data-target="0">0</span></div>
+                            <div class="stat-value"><span id="auditCount">0</span></div>
                             <div class="stat-change"><i class="bi bi-database-check"></i> Saved in your workspace</div>
                         </div>
                     </div>
@@ -147,60 +958,371 @@
                 <div class="col-xl-3 col-md-6">
                     <div class="glass-card stat-card fade-in-up delay-300">
                         <div class="stat-icon warning">
-                            <i class="bi bi-key"></i>
+                            <i class="bi bi-file-earmark-check"></i>
                         </div>
                         <div class="stat-details">
                             <h4>Avg Content Score</h4>
-                            <div class="stat-value"><span id="averageContent" class="counter-value" data-target="0">0</span></div>
-                            <div class="stat-change"><i class="bi bi-file-earmark-check"></i> Across saved audits</div>
+                            <div class="stat-value"><span id="averageContent">—</span></div>
+                            <div class="stat-change"><i class="bi bi-file-earmark-text"></i> Across saved audits</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6">
                     <div class="glass-card stat-card fade-in-up delay-400">
                         <div class="stat-icon info">
-                            <i class="bi bi-link-45deg"></i>
+                            <i class="bi bi-heart-pulse"></i>
                         </div>
                         <div class="stat-details">
                             <h4>Avg Health Score</h4>
-                            <div class="stat-value"><span id="averageHealth" class="counter-value" data-target="0">0</span></div>
-                            <div class="stat-change"><i class="bi bi-heart-pulse"></i> Across saved audits</div>
+                            <div class="stat-value"><span id="averageHealth">—</span></div>
+                            <div class="stat-change"><i class="bi bi-shield-check"></i> Across saved audits</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Charts Section -->
-            <div class="row g-4 mb-4">
+            <!-- Empty State (Shown when 0 audits completed) -->
+            <div id="emptyDashboardState" class="row g-4 mb-4">
                 <div class="col-12">
-                    <div class="glass-card h-100 fade-in-up delay-100">
-                        <h4 class="mb-4 fs-5 fw-semibold">Overall SEO Health</h4>
-                        <div class="d-flex justify-content-center mb-3">
-                            <div class="score-meter good" style="--score: 82; width: 160px; height: 160px;">
-                                <div class="score-value" style="font-size: 2.5rem;">82</div>
+                    <div class="glass-card h-100 fade-in-up delay-100 text-center py-5">
+                        <i class="bi bi-graph-up-arrow fs-1 text-primary mb-3 d-block"></i>
+                        <h4 class="mb-2 fw-semibold">No audit data available yet</h4>
+                        <p class="text-muted mb-4">Run an audit on any website URL above to see your live SEO scores, performance charts, and detailed metrics here.</p>
+                        <a href="website-audit.html" class="btn btn-primary btn-premium px-4 py-2" id="startFirstAuditBtn">
+                            <i class="bi bi-search me-2"></i> Start Your First Audit
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Dashboard Content (Shown when audits > 0) -->
+            <div id="activeDashboardContent" class="d-none">
+                <!-- Row 1: Performance Trend Chart & Latest Audit Overview Card -->
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-8">
+                        <div class="glass-card h-100 fade-in-up">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h4 class="mb-0 fs-5 fw-semibold">Audit Performance Trend</h4>
+                                    <p class="text-muted small mb-0">Historical SEO, Content, and Health scores across completed audits</p>
+                                </div>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1">Saved Audits</span>
+                            </div>
+                            <div class="chart-container" style="position: relative; height:280px;">
+                                <canvas id="dashboardTrendChart"></canvas>
                             </div>
                         </div>
-                        <div class="text-center mt-3">
-                            <div class="status-badge status-success mb-2">Good</div>
-                            <p class="text-muted small">Your site is performing well, but there is still room for optimization.</p>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="glass-card h-100 fade-in-up delay-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="mb-0 fs-5 fw-semibold">Latest Audit Health</h4>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">Completed</span>
+                                </div>
+                                <div class="mb-3 text-truncate" id="latestAuditUrlContainer">
+                                    <i class="bi bi-globe2 text-primary me-2"></i>
+                                    <span class="text-white fw-medium text-break" id="latestAuditUrl">—</span>
+                                    <div class="text-muted small mt-1" id="latestAuditDate">—</div>
+                                </div>
+                                <div class="d-flex justify-content-center my-3">
+                                    <div class="score-meter" id="latestScoreMeter" style="--score: 0; width: 140px; height: 140px;">
+                                        <div class="score-value" id="latestScoreVal" style="font-size: 2.2rem;">0</div>
+                                    </div>
+                                </div>
+                                <div class="mt-3 pt-3 border-top border-secondary">
+                                    <div class="d-flex justify-content-between mb-2 small">
+                                        <span class="text-muted"><i class="bi bi-file-earmark-text me-1 text-info"></i> Content Score</span>
+                                        <span class="fw-semibold text-info" id="latestContentScore">—</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2 small">
+                                        <span class="text-muted"><i class="bi bi-heart-pulse me-1 text-success"></i> Health Score</span>
+                                        <span class="fw-semibold text-success" id="latestHealthScore">—</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between small">
+                                        <span class="text-muted"><i class="bi bi-card-text me-1 text-warning"></i> Word Count</span>
+                                        <span class="fw-semibold text-warning" id="latestWordCount">—</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-2">
+                                <a href="website-audit.html" class="btn btn-outline-primary w-100 btn-sm py-2">
+                                    <i class="bi bi-arrow-right-circle me-1"></i> View Full Audit Report
+                                </a>
+                            </div>
                         </div>
-                        <div class="mt-4 pt-3 border-top border-secondary">
-                            <div class="d-flex justify-content-between mb-2 small">
-                                <span>Performance</span>
-                                <span class="text-success">92/100</span>
+                    </div>
+                </div>
+
+                <!-- Row 2: Real Audit Metrics Detailed Breakdown -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="fs-5 fw-semibold mb-0"><i class="bi bi-clipboard2-data me-2 text-primary"></i>Latest Audit Metrics Breakdown</h4>
+                        <span class="text-muted small">Measured directly from target page</span>
+                    </div>
+
+                    <div class="metrics-breakdown-grid">
+                        <!-- Card 1: Title Tag -->
+                        <div class="metric-breakdown-card fade-in-up">
+                            <div class="mb-card-header">
+                                <div class="mb-card-title-group">
+                                    <i class="bi bi-window-desktop mb-card-icon text-primary"></i>
+                                    <span class="mb-card-title">Title Tag</span>
+                                </div>
+                                <span class="mb-status-pill mb-pill-good" id="latestTitleStatus">Good</span>
                             </div>
-                            <div class="d-flex justify-content-between mb-2 small">
-                                <span>Accessibility</span>
-                                <span class="text-success">88/100</span>
+                            <div class="mb-card-body">
+                                <div class="mb-text-clamp-2" id="latestTitleSnippet" title="Page Title">Karnataka State Road Transport Corporation - KSRTC</div>
                             </div>
-                            <div class="d-flex justify-content-between small">
-                                <span>Best Practices</span>
-                                <span class="text-warning">76/100</span>
+                            <div class="mb-card-footer">
+                                <div class="mb-secondary-text">
+                                    <span id="latestTitleLength">50 characters (Optimal)</span>
+                                    <span class="small text-muted">50-60 optimal</span>
+                                </div>
+                                <div class="mb-optimal-bar-container" title="Target range: 50-60 characters">
+                                    <div class="mb-optimal-zone" style="left: 62.5%; width: 12.5%;"></div>
+                                    <div class="mb-optimal-fill" id="latestTitleBar" style="width: 62.5%; background: #22C55E;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Meta Description -->
+                        <div class="metric-breakdown-card fade-in-up delay-100">
+                            <div class="mb-card-header">
+                                <div class="mb-card-title-group">
+                                    <i class="bi bi-card-text mb-card-icon text-info"></i>
+                                    <span class="mb-card-title">Meta Description</span>
+                                </div>
+                                <span class="mb-status-pill mb-pill-warning" id="latestMetaStatus">Slightly long</span>
+                            </div>
+                            <div class="mb-card-body">
+                                <div class="mb-text-clamp-3" id="latestMetaSnippet" title="Meta Description">Karnataka State Road Transport Corporation - KSRTC Online Bus Tickets Booking, Karnataka State Road Transport Corporation - KSRTC Bus Fare, Schedule and Time Table.</div>
+                            </div>
+                            <div class="mb-card-footer">
+                                <div class="mb-secondary-text">
+                                    <span id="latestMetaLength">164 characters</span>
+                                    <span class="small text-muted">120-160 optimal</span>
+                                </div>
+                                <div class="mb-optimal-bar-container" title="Target range: 120-160 characters">
+                                    <div class="mb-optimal-zone" style="left: 60%; width: 20%;"></div>
+                                    <div class="mb-optimal-fill" id="latestMetaBar" style="width: 82%; background: #F59E0B;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Headings Hierarchy -->
+                        <div class="metric-breakdown-card fade-in-up delay-200">
+                            <div class="mb-card-header">
+                                <div class="mb-card-title-group">
+                                    <i class="bi bi-list-nested mb-card-icon text-warning"></i>
+                                    <span class="mb-card-title">Headings Hierarchy</span>
+                                </div>
+                                <span class="mb-status-pill mb-pill-warning" id="latestH1Badge">Needs work</span>
+                            </div>
+                            <div class="mb-card-body">
+                                <div class="mb-stat-blocks-row">
+                                    <div class="mb-stat-block">
+                                        <span class="mb-stat-label">H1</span>
+                                        <span class="mb-stat-number mb-stat-warn" id="latestH1Count">3</span>
+                                    </div>
+                                    <div class="mb-stat-block">
+                                        <span class="mb-stat-label">H2</span>
+                                        <span class="mb-stat-number mb-stat-warn" id="latestH2Count">0</span>
+                                    </div>
+                                    <div class="mb-stat-block">
+                                        <span class="mb-stat-label">H3</span>
+                                        <span class="mb-stat-number" id="latestH3Count">2</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-card-footer">
+                                <div class="mb-secondary-text" id="latestHeadingSummary">3 H1 tags: use only one</div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Images & ALT Tags -->
+                        <div class="metric-breakdown-card fade-in-up">
+                            <div class="mb-card-header">
+                                <div class="mb-card-title-group">
+                                    <i class="bi bi-image mb-card-icon text-success"></i>
+                                    <span class="mb-card-title">Images & ALT Tags</span>
+                                </div>
+                                <span class="mb-status-pill mb-pill-warning" id="latestAltBadge">Needs work</span>
+                            </div>
+                            <div class="mb-card-body">
+                                <div class="mb-images-main">
+                                    <div class="mb-main-number-group">
+                                        <span class="mb-main-number" id="latestImageTotal">52</span>
+                                        <span class="mb-main-number-label">Total Images</span>
+                                    </div>
+                                    <div class="mb-ratio-bar" id="latestAltRatioBar" title="Ratio of images with ALT text vs missing ALT text">
+                                        <div class="mb-ratio-segment mb-ratio-good" id="latestAltBarGood" style="width: 27%;"></div>
+                                        <div class="mb-ratio-segment mb-ratio-warn" id="latestAltBarWarn" style="width: 73%;"></div>
+                                    </div>
+                                    <div class="mb-ratio-legend" id="latestAltLegend">
+                                        <span class="d-inline-flex align-items-center gap-1">
+                                            <span class="mb-legend-dot" style="background:#22C55E"></span>
+                                            <span id="latestAltWithCount">14 with ALT</span>
+                                        </span>
+                                        <span class="d-inline-flex align-items-center gap-1 ms-2">
+                                            <span class="mb-legend-dot" style="background:#F59E0B"></span>
+                                            <span id="latestAltMissingCount">38 missing</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-card-footer">
+                                <div class="mb-secondary-text" id="latestAltRatio">14 with ALT / 38 missing</div>
+                            </div>
+                        </div>
+
+                        <!-- Card 5: Link Architecture -->
+                        <div class="metric-breakdown-card fade-in-up delay-100">
+                            <div class="mb-card-header">
+                                <div class="mb-card-title-group">
+                                    <i class="bi bi-link-45deg mb-card-icon text-info"></i>
+                                    <span class="mb-card-title">Link Architecture</span>
+                                </div>
+                                <span class="mb-status-pill mb-pill-info" id="latestLinksBadge">Info</span>
+                            </div>
+                            <div class="mb-card-body">
+                                <div class="mb-stat-blocks-row">
+                                    <div class="mb-stat-block">
+                                        <span class="mb-stat-label">INTERNAL</span>
+                                        <span class="mb-stat-number" id="latestInternalCount">24</span>
+                                    </div>
+                                    <div class="mb-stat-block">
+                                        <span class="mb-stat-label">EXTERNAL</span>
+                                        <span class="mb-stat-number" id="latestExternalCount">3</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-card-footer">
+                                <div class="mb-secondary-text" id="latestLinksTotal">27 total links found</div>
+                            </div>
+                        </div>
+
+                        <!-- Card 6: Technical & Mobile -->
+                        <div class="metric-breakdown-card fade-in-up delay-200">
+                            <div class="mb-card-header">
+                                <div class="mb-card-title-group">
+                                    <i class="bi bi-shield-check mb-card-icon text-primary"></i>
+                                    <span class="mb-card-title">Technical & Mobile</span>
+                                </div>
+                                <span class="mb-status-pill mb-pill-good" id="latestHttpsBadge">Good</span>
+                            </div>
+                            <div class="mb-card-body">
+                                <div class="mb-tech-main">
+                                    <div class="mb-mobile-badge" id="latestViewportText">
+                                        <i class="bi bi-check-circle-fill text-success"></i> <span>Mobile-friendly</span>
+                                    </div>
+                                    <div class="mb-stat-block text-end">
+                                        <span class="mb-stat-label">WORD COUNT</span>
+                                        <span class="mb-stat-number" id="latestWordCountNumber">499</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-card-footer">
+                                <div class="mb-secondary-text" id="latestWordCountSummary">
+                                    <span id="latestHttpsStatusText"><i class="bi bi-lock-fill text-success me-1"></i>HTTPS Active</span>
+                                    <span>Responsive Viewport</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 3: Real SEO Issues Grouped by Severity & AI Action Items -->
+                <div class="row g-4 mb-4">
+                    <!-- SEO Issues by Severity -->
+                    <div class="col-lg-8">
+                        <div class="glass-card fade-in-up">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                                <div>
+                                    <h4 class="mb-1 fs-5 fw-semibold">Detected Issues & Checks</h4>
+                                    <p class="text-muted small mb-0">Audit findings grouped by severity (Critical, Warnings, Passed)</p>
+                                </div>
+                                <div class="issue-filter-pills" role="group" aria-label="Filter issues by severity">
+                                    <button type="button" class="issue-pill issue-pill-critical" id="criticalIssuesBadge" data-severity="critical" aria-pressed="false" title="Filter Critical Issues">
+                                        <span class="issue-pill-dot"></span>
+                                        <span class="issue-pill-text">0 Critical</span>
+                                    </button>
+                                    <button type="button" class="issue-pill issue-pill-warning" id="warningIssuesBadge" data-severity="warning" aria-pressed="false" title="Filter Warning Issues">
+                                        <span class="issue-pill-dot"></span>
+                                        <span class="issue-pill-text">0 Warnings</span>
+                                    </button>
+                                    <button type="button" class="issue-pill issue-pill-passed" id="passedIssuesBadge" data-severity="passed" aria-pressed="false" title="Filter Passed Checks">
+                                        <span class="issue-pill-dot"></span>
+                                        <span class="issue-pill-text">0 Passed</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="seoIssuesContainer" class="seo-issues-wrapper">
+                                <div class="text-center text-muted py-4 small">Analyzing site issues...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Action Items -->
+                    <div class="col-lg-4">
+                        <div class="glass-card h-100 fade-in-up delay-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="mb-0 fs-5 fw-semibold">AI Action Items</h4>
+                                    <span class="badge bg-primary rounded-pill" id="aiTasksBadge">Action Plan</span>
+                                </div>
+                                <p class="text-muted small mb-3">Key prioritized SEO recommendations from your latest audit.</p>
+                                
+                                <div id="dashboardAiInsightsList" class="ai-insight-list">
+                                    <div class="text-center text-muted py-3 small">Loading recommendations...</div>
+                                </div>
+                            </div>
+
+                            <a href="recommendations.html" class="btn btn-outline-primary w-100 mt-3 btn-sm py-2">
+                                <i class="bi bi-lightbulb me-1"></i> View All AI Recommendations
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 4: Recent Audits Table -->
+                <div class="row g-4 mb-4">
+                    <div class="col-12">
+                        <div class="glass-card fade-in-up">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h4 class="mb-0 fs-5 fw-semibold">Recent Audits</h4>
+                                    <p class="text-muted small mb-0">Saved audit records from your workspace</p>
+                                </div>
+                                <a href="website-audit.html" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-plus me-1"></i>New Audit
+                                </a>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table-glass" id="recentAuditsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Website URL</th>
+                                            <th>Date</th>
+                                            <th>SEO Score</th>
+                                            <th>Content</th>
+                                            <th>Health</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentAuditsBody">
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted py-4">Loading audit records...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+        </div> <!-- End Page Content -->
 
 
 
@@ -211,9 +1333,9 @@
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="js/theme.js"></script>
+<script src="js/theme.js?v=2.4"></script>
 <script src="js/charts-config.js"></script>
-<script src="js/dashboard.js"></script>
-<script src="js/user-display.js"></script>
+<script src="js/dashboard.js?v=4.1"></script>
+<script src="js/user-display.js?v=4.0"></script>
 </body>
 </html>

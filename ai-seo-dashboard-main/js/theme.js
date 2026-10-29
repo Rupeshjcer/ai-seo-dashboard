@@ -180,7 +180,7 @@ function initCounters() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                animateCounter(entry.target);
+                runThemeCounter(entry.target);
                 observer.unobserve(entry.target);
             }
         });
@@ -191,16 +191,18 @@ function initCounters() {
     });
 }
 
-function animateCounter(el) {
-    const target = parseFloat(el.getAttribute('data-target') || el.innerText);
-    const duration = 2000; // 2 seconds
+function runThemeCounter(el) {
+    if (!el) return;
+    const raw = el.getAttribute('data-target') ?? el.innerText;
+    const target = parseFloat(raw);
+    if (isNaN(target) || target <= 0) return;
+    const duration = 1500;
     const fps = 60;
     const increment = target / (duration / (1000 / fps));
     let current = 0;
     
-    // Check if it's a decimal number or percentage
     const isDecimal = target % 1 !== 0;
-    const isPercent = el.innerText.includes('%');
+    const isPercent = (el.innerText || '').includes('%');
 
     const timer = setInterval(() => {
         current += increment;
@@ -222,21 +224,40 @@ function animateCounter(el) {
 const API_BASE = 'http://127.0.0.1:5000';
 
 async function fetchAPI(endpoint, options = {}) {
+    const controller = new AbortController();
+    const timeoutMs = options.timeout || 25000;
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
     try {
         const response = await fetch(`${API_BASE}${endpoint}`, {
             headers: {
                 'Content-Type': 'application/json',
                 ...options.headers
             },
+            signal: controller.signal,
             ...options
         });
         
+        clearTimeout(timeoutId);
+        
+        let data = null;
+        try {
+            data = await response.json();
+        } catch (e) {
+            data = null;
+        }
+
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorMsg = (data && data.message) ? data.message : `HTTP error! status: ${response.status}`;
+            throw new Error(errorMsg);
         }
         
-        return await response.json();
+        return data || {};
     } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+            throw new Error('Request timed out. Please check if the backend service is running.');
+        }
         console.error('API Fetch Error:', error);
         throw error;
     }
